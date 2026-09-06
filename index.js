@@ -16,6 +16,13 @@ const app = express();
 const PORT = process.env.PORT || 8000;
 const MONGO_URI = process.env.MONGO_URI || "mongodb://127.0.0.1:27017/blogify";
 
+// ── CORS — allow React frontend to call this API ───────────────
+const cors = require("cors");
+app.use(cors({
+  origin: process.env.CLIENT_URL || "http://localhost:5173",
+  credentials: true, // required for httpOnly cookies
+}));
+
 // ── Database ───────────────────────────────────────────────────
 mongoose
   .connect(MONGO_URI)

@@ -25,7 +25,12 @@ router.post("/signin", async (req, res) => {
         const token = await User.matchPasswordAndGenerateToken(email, password);
         const user = await User.findOne({ email }).select("-password -salt");
         return res
-            .cookie("token", token, { httpOnly: true })
+            .cookie("token", token, {
+                httpOnly: true,
+                secure: process.env.NODE_ENV === "production",
+                sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
+                maxAge: 7 * 24 * 60 * 60 * 1000,
+            })
             .json({ success: true, user });
     } catch (error) {
         return res.status(401).json({ success: false, error: "Incorrect Email or Password" });
@@ -40,7 +45,12 @@ router.post("/signup", async (req, res) => {
         const token = await User.matchPasswordAndGenerateToken(email, password);
         const safeUser = await User.findById(user._id).select("-password -salt");
         return res
-            .cookie("token", token, { httpOnly: true })
+            .cookie("token", token, {
+                httpOnly: true,
+                secure: process.env.NODE_ENV === "production",
+                sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
+                maxAge: 7 * 24 * 60 * 60 * 1000,
+            })
             .json({ success: true, user: safeUser });
     } catch (error) {
         // MongoDB duplicate key error → friendly message
