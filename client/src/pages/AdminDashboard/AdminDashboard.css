@@ -1,0 +1,194 @@
+/* =============================================
+   Admin Dashboard Page Styles
+   ============================================= */
+
+.admin-page {
+  max-width: 1000px;
+  margin: var(--spacing-xl) auto;
+  padding: 0 var(--spacing-xl);
+}
+
+.admin-page__heading {
+  font-size: var(--font-size-2xl);
+  font-weight: 800;
+  color: var(--color-text);
+  margin-bottom: var(--spacing-xs);
+}
+
+.admin-page__sub {
+  font-size: var(--font-size-sm);
+  color: var(--color-text-muted);
+  margin-bottom: var(--spacing-2xl);
+}
+
+/* Section headings */
+.admin-section__title {
+  font-size: var(--font-size-xl);
+  font-weight: 700;
+  margin-bottom: var(--spacing-md);
+  padding-bottom: var(--spacing-sm);
+  border-bottom: 2px solid var(--color-border);
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.admin-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: #ef4444;
+  color: #fff;
+  font-size: 0.7rem;
+  font-weight: 700;
+  border-radius: 999px;
+  padding: 0.1rem 0.55rem;
+  min-width: 22px;
+}
+
+/* Empty state */
+.admin-empty {
+  color: var(--color-text-muted);
+  font-size: var(--font-size-sm);
+  padding: var(--spacing-lg) 0;
+}
+
+/* ---- Reports List ---- */
+.admin-reports {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-md);
+  margin-bottom: var(--spacing-2xl);
+}
+
+.admin-report-card {
+  background: #fff8f8;
+  border: 1px solid #fecaca;
+  border-radius: var(--radius-md);
+  padding: var(--spacing-md) var(--spacing-lg);
+  display: flex;
+  align-items: flex-start;
+  gap: var(--spacing-md);
+}
+
+.admin-report-card__body {
+  flex: 1;
+}
+
+.admin-report-card__blog {
+  font-weight: 700;
+  font-size: var(--font-size-base);
+  color: var(--color-text);
+  margin-bottom: 0.2rem;
+}
+
+.admin-report-card__meta {
+  font-size: var(--font-size-xs);
+  color: var(--color-text-muted);
+  margin-bottom: 0.5rem;
+}
+
+.admin-report-card__reason {
+  font-size: var(--font-size-sm);
+  color: #dc2626;
+  background: #fee2e2;
+  border-radius: var(--radius-sm);
+  padding: 0.4rem 0.75rem;
+  display: inline-block;
+}
+
+.admin-report-card__actions {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xs);
+  flex-shrink: 0;
+}
+
+/* ---- Blog List ---- */
+.admin-blogs {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-sm);
+}
+
+.admin-blog-row {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-md);
+  padding: var(--spacing-sm) var(--spacing-md);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  background: var(--color-card-bg, #fff);
+}
+
+.admin-blog-row__thumb {
+  width: 56px;
+  height: 42px;
+  object-fit: cover;
+  border-radius: var(--radius-sm);
+  flex-shrink: 0;
+  background: #e5e7eb;
+}
+
+.admin-blog-row__thumb--placeholder {
+  width: 56px;
+  height: 42px;
+  border-radius: var(--radius-sm);
+  background: #e5e7eb;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.65rem;
+  color: #9ca3af;
+}
+
+.admin-blog-row__info {
+  flex: 1;
+}
+
+.admin-blog-row__title {
+  font-size: var(--font-size-base);
+  font-weight: 600;
+  color: var(--color-text);
+}
+
+.admin-blog-row__author {
+  font-size: var(--font-size-xs);
+  color: var(--color-text-muted);
+}
+
+/* ---- Shared Buttons ---- */
+.admin-btn {
+  padding: 0.35rem 0.9rem;
+  border: none;
+  border-radius: var(--radius-sm);
+  font-size: var(--font-size-sm);
+  font-weight: 600;
+  cursor: pointer;
+  transition: opacity 0.15s;
+  white-space: nowrap;
+}
+
+.admin-btn:hover { opacity: 0.85; }
+.admin-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+.admin-btn--danger {
+  background: #ef4444;
+  color: #fff;
+}
+
+.admin-btn--ghost {
+  background: #f3f4f6;
+  color: #374151;
+  border: 1px solid #d1d5db;
+}
+
+.admin-error {
+  background: #fef2f2;
+  color: #ef4444;
+  padding: var(--spacing-md);
+  border-radius: var(--radius-md);
+  border: 1px solid #fecaca;
+  margin-bottom: var(--spacing-lg);
+}

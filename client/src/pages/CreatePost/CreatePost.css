@@ -1,0 +1,162 @@
+/* =============================================
+   CreatePost Page Styles
+   ============================================= */
+
+.create-post {
+  max-width: 760px;
+  margin: var(--spacing-xl) auto;
+  padding: 0 var(--spacing-xl);
+}
+
+.create-post__heading {
+  font-size: var(--font-size-2xl);
+  font-weight: 800;
+  margin-bottom: var(--spacing-xl);
+  color: var(--color-text);
+}
+
+.create-post__form {
+  background: var(--color-white);
+  border-radius: var(--radius-lg);
+  padding: var(--spacing-xl);
+  box-shadow: var(--shadow-card);
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-lg);
+}
+
+/* Field group */
+.form-field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xs);
+}
+
+.form-field__label {
+  font-size: var(--font-size-sm);
+  font-weight: 600;
+  color: var(--color-text);
+}
+
+.form-field__input,
+.form-field__textarea {
+  padding: 0.65rem 1rem;
+  border: 1.5px solid var(--color-border);
+  border-radius: var(--radius-md);
+  font-size: var(--font-size-base);
+  color: var(--color-text);
+  outline: none;
+  transition: border-color var(--transition-fast);
+  background: var(--color-white);
+}
+
+.form-field__input:focus,
+.form-field__textarea:focus {
+  border-color: var(--color-primary);
+}
+
+.form-field__textarea {
+  min-height: 240px;
+  resize: vertical;
+  line-height: 1.6;
+}
+
+/* File upload preview */
+.form-field__file-wrap {
+  position: relative;
+}
+
+.form-field__file-label {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  padding: 0.65rem 1rem;
+  border: 1.5px dashed var(--color-border);
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  color: var(--color-text-muted);
+  font-size: var(--font-size-sm);
+  transition: border-color var(--transition-fast);
+}
+
+.form-field__file-label:hover {
+  border-color: var(--color-primary);
+  color: var(--color-text);
+}
+
+.form-field__file-input {
+  display: none;
+}
+
+.form-field__preview {
+  margin-top: var(--spacing-sm);
+  width: 100%;
+  max-height: 200px;
+  object-fit: cover;
+  border-radius: var(--radius-md);
+}
+
+/* Side-by-side row for Category + Subcategory */
+.form-field__row {
+  display: flex;
+  gap: var(--spacing-lg);
+}
+
+.form-field__row > .form-field {
+  flex: 1;
+  min-width: 0;
+}
+
+@media (max-width: 520px) {
+  .form-field__row {
+    flex-direction: column;
+    gap: var(--spacing-md);
+  }
+}
+
+/* Select dropdown */
+.form-field__select {
+  padding: 0.65rem 1rem;
+  border: 1.5px solid var(--color-border);
+  border-radius: var(--radius-md);
+  font-size: var(--font-size-base);
+  color: var(--color-text);
+  outline: none;
+  transition: border-color var(--transition-fast);
+  background: var(--color-white);
+  cursor: pointer;
+  appearance: auto;
+}
+
+.form-field__select:focus {
+  border-color: var(--color-primary);
+}
+
+.form-field__select:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  background: #f9fafb;
+}
+
+/* Submit button */
+.create-post__submit {
+  align-self: flex-start;
+  padding: 0.7rem 2rem;
+  background: var(--color-btn-primary);
+  color: var(--color-white);
+  border: none;
+  border-radius: var(--radius-md);
+  font-size: var(--font-size-base);
+  font-weight: 600;
+  cursor: pointer;
+  transition: background var(--transition-fast);
+}
+
+.create-post__submit:hover {
+  background: var(--color-btn-hover);
+}
+
+.create-post__submit:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
