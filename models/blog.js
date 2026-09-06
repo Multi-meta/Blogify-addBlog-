@@ -13,6 +13,14 @@ const blogSchema = new Schema({
         type: String,
         required: false,
     },
+    category: {
+        type: String,
+        default: "",
+    },
+    subcategory: {
+        type: String,
+        default: "",
+    },
     createdBy: {
         type: Schema.Types.ObjectId,
         ref: "user",

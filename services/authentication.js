@@ -1,6 +1,6 @@
 const JWT = require("jsonwebtoken");
 
-const secret = "$uperMan@123";
+const secret = process.env.JWT_SECRET || "blogify_dev_secret_change_in_production";
 
 function createTokenForUser(user){
     const payload = {
