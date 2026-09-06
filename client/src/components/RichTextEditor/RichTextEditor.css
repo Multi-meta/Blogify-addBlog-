@@ -1,0 +1,128 @@
+/* =============================================
+   Rich Text Editor (TipTap) Styles
+   ============================================= */
+
+.rich-editor {
+  border: 1.5px solid var(--color-border);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  background: #fff;
+}
+
+/* Toolbar */
+.rich-editor__toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2px;
+  padding: 0.4rem 0.5rem;
+  background: #f9fafb;
+  border-bottom: 1px solid var(--color-border);
+  align-items: center;
+}
+
+.rich-editor__toolbar-divider {
+  width: 1px;
+  height: 20px;
+  background: #d1d5db;
+  margin: 0 6px;
+}
+
+.rich-editor__btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border: none;
+  border-radius: 4px;
+  background: transparent;
+  cursor: pointer;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #374151;
+  transition: background 0.12s, color 0.12s;
+}
+.rich-editor__btn:hover { background: #e5e7eb; }
+.rich-editor__btn--active {
+  background: var(--color-primary, #1e293b);
+  color: #fff;
+}
+
+/* Editor content area */
+.rich-editor .tiptap {
+  min-height: 300px;
+  max-height: 600px;
+  overflow-y: auto;
+  padding: 1rem;
+  outline: none;
+  font-size: var(--font-size-base);
+  line-height: 1.75;
+  color: var(--color-text);
+}
+
+.rich-editor .tiptap p.is-editor-empty:first-child::before {
+  content: attr(data-placeholder);
+  float: left;
+  color: #9ca3af;
+  pointer-events: none;
+  height: 0;
+}
+
+/* Typography inside editor */
+.rich-editor .tiptap h1 { font-size: 1.75rem; font-weight: 800; margin: 1rem 0 0.5rem; }
+.rich-editor .tiptap h2 { font-size: 1.4rem;  font-weight: 700; margin: 1rem 0 0.5rem; }
+.rich-editor .tiptap h3 { font-size: 1.15rem; font-weight: 700; margin: 0.75rem 0 0.4rem; }
+.rich-editor .tiptap p  { margin: 0.5rem 0; }
+.rich-editor .tiptap ul,
+.rich-editor .tiptap ol { padding-left: 1.5rem; margin: 0.5rem 0; }
+.rich-editor .tiptap li { margin: 0.25rem 0; }
+.rich-editor .tiptap blockquote {
+  border-left: 3px solid #d1d5db;
+  padding-left: 1rem;
+  margin: 0.75rem 0;
+  color: #6b7280;
+  font-style: italic;
+}
+.rich-editor .tiptap img {
+  max-width: 100%;
+  height: auto;
+  border-radius: 8px;
+  margin: 1rem 0;
+  display: block;
+}
+.rich-editor .tiptap hr {
+  border: none;
+  border-top: 2px solid #e5e7eb;
+  margin: 1.5rem 0;
+}
+
+/* ---- Rendered blog body (BlogDetail) ---- */
+.blog-body-html h1 { font-size: 1.75rem; font-weight: 800; margin: 1.5rem 0 0.75rem; }
+.blog-body-html h2 { font-size: 1.4rem;  font-weight: 700; margin: 1.25rem 0 0.6rem; }
+.blog-body-html h3 { font-size: 1.15rem; font-weight: 700; margin: 1rem 0 0.5rem; }
+.blog-body-html p  { margin: 0.6rem 0; line-height: 1.8; }
+.blog-body-html ul,
+.blog-body-html ol { padding-left: 1.5rem; margin: 0.5rem 0; }
+.blog-body-html li { margin: 0.25rem 0; }
+.blog-body-html blockquote {
+  border-left: 3px solid #d1d5db;
+  padding-left: 1rem;
+  margin: 0.75rem 0;
+  color: #6b7280;
+  font-style: italic;
+}
+.blog-body-html img {
+  max-width: 100%;
+  height: auto;
+  border-radius: 8px;
+  margin: 1rem 0;
+  display: block;
+}
+.blog-body-html hr {
+  border: none;
+  border-top: 2px solid #e5e7eb;
+  margin: 1.5rem 0;
+}
+.blog-body-html strong { font-weight: 700; }
+.blog-body-html em { font-style: italic; }
+.blog-body-html u { text-decoration: underline; }
