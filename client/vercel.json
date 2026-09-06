@@ -1,5 +1,32 @@
 {
   "rewrites": [
-    { "source": "/(.*)", "destination": "/index.html" }
+    {
+      "source": "/api/:path*",
+      "destination": "https://blogify-addblog.onrender.com/api/:path*"
+    },
+    {
+      "source": "/user/:path*",
+      "destination": "https://blogify-addblog.onrender.com/user/:path*"
+    },
+    {
+      "source": "/blog/:path*",
+      "destination": "https://blogify-addblog.onrender.com/blog/:path*"
+    },
+    {
+      "source": "/admin/:path*",
+      "destination": "https://blogify-addblog.onrender.com/admin/:path*"
+    },
+    {
+      "source": "/uploads/:path*",
+      "destination": "https://blogify-addblog.onrender.com/uploads/:path*"
+    },
+    {
+      "source": "/images/:path*",
+      "destination": "https://blogify-addblog.onrender.com/images/:path*"
+    },
+    {
+      "source": "/(.*)",
+      "destination": "/index.html"
+    }
   ]
 }
