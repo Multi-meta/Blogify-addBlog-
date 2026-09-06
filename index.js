@@ -1,38 +1,67 @@
+require("dotenv").config();
+
 const path = require("path");
 const express = require("express");
 const mongoose = require("mongoose");
 const cookieParser = require("cookie-parser");
 
 const Blog = require("./models/blog");
-
-const userRoute = require("./routes/user");
-const blogRoute = require("./routes/blog");
+const userRoute  = require("./routes/user");
+const blogRoute  = require("./routes/blog");
+const adminRoute = require("./routes/admin");
 
 const { checkForAuthenticationCookie } = require("./middlewares/authentication");
 
 const app = express();
-const PORT = 8000;
+const PORT = process.env.PORT || 8000;
+const MONGO_URI = process.env.MONGO_URI || "mongodb://127.0.0.1:27017/blogify";
 
-mongoose.connect("mongodb://127.0.0.1:27017/blogify")
-.then((e) => console.log("MongoDB Connected"));
+// ── Database ───────────────────────────────────────────────────
+mongoose
+  .connect(MONGO_URI)
+  .then(() => console.log("MongoDB Connected"))
+  .catch((err) => console.error("MongoDB connection error:", err));
 
-app.set("view engine", "ejs");
-app.set("views", path.resolve("./views"));
-
-app.use(express.urlencoded({extended: false}));
+// ── Middleware ─────────────────────────────────────────────────
+app.use(express.urlencoded({ extended: false }));
+app.use(express.json());                         // parse JSON bodies from React
 app.use(cookieParser());
 app.use(checkForAuthenticationCookie("token"));
 app.use(express.static(path.resolve("./public")));
 
-app.get("/", async (req, res) => {
-    const allBlogs = await Blog.find({});
-    res.render("home", {
-        user: req.user,
-        blogs: allBlogs,
-    });
+// ── API Routes ─────────────────────────────────────────────────
+// GET /api/blogs — return all blogs as JSON (used by React Home page)
+app.get("/api/blogs", async (req, res) => {
+  try {
+    const filter = {};
+    if (req.query.category) filter.category = req.query.category;
+    if (req.query.subcategory) filter.subcategory = req.query.subcategory;
+
+    const blogs = await Blog.find(filter)
+      .populate("createdBy", "fullName profileImageURL")
+      .sort({ createdAt: -1 });
+    return res.json({ success: true, blogs });
+  } catch (error) {
+    return res.status(500).json({ success: false, error: error.message });
+  }
 });
 
-app.use("/user", userRoute);
-app.use("/blog", blogRoute);
+// GET /api/my-blogs — return blogs created by the logged-in user
+app.get("/api/my-blogs", async (req, res) => {
+  if (!req.user) return res.status(401).json({ success: false, error: "Not authenticated" });
+  try {
+    const blogs = await Blog.find({ createdBy: req.user._id })
+      .select("title coverImageURL createdAt")
+      .sort({ createdAt: -1 });
+    return res.json({ success: true, blogs });
+  } catch (error) {
+    return res.status(500).json({ success: false, error: error.message });
+  }
+});
 
+app.use("/user",  userRoute);
+app.use("/blog",  blogRoute);
+app.use("/admin", adminRoute);
+
+// ── Start Server ───────────────────────────────────────────────
 app.listen(PORT, () => console.log(`Server Started at PORT: ${PORT}`));
