@@ -29,11 +29,3 @@
   width: 240px;
   flex-shrink: 0;
 }
-
-/* Section heading (optional) */
-.home__heading {
-  font-size: var(--font-size-lg);
-  font-weight: 600;
-  color: var(--color-text);
-  margin-bottom: var(--spacing-lg);
-}

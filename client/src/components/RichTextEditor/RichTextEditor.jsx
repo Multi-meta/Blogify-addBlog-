@@ -10,7 +10,6 @@
 import { useEditor, EditorContent } from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';
 import Image from '@tiptap/extension-image';
-import Underline from '@tiptap/extension-underline';
 import Placeholder from '@tiptap/extension-placeholder';
 import { useRef } from 'react';
 import './RichTextEditor.css';
@@ -20,9 +19,8 @@ function RichTextEditor({ content = '', onChange }) {
 
   const editor = useEditor({
     extensions: [
-      StarterKit,
+      StarterKit, // includes Underline since TipTap v3
       Image.configure({ inline: false, allowBase64: false }),
-      Underline,
       Placeholder.configure({ placeholder: 'Write your blog content here...' }),
     ],
     content,

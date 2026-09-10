@@ -15,6 +15,8 @@ import EditPost from './pages/EditPost/EditPost';
 import SignIn from './pages/SignIn/SignIn';
 import SignUp from './pages/SignUp/SignUp';
 import AdminDashboard from './pages/AdminDashboard/AdminDashboard';
+import Footer from './components/Footer/Footer';
+import ScrollToTop from './components/ScrollToTop/ScrollToTop';
 
 import './styles/global.css';
 
@@ -57,9 +59,10 @@ function App() {
 
   return (
     <BrowserRouter>
+      <ScrollToTop />
       <Navbar user={user} onLogout={handleLogout} />
       <Routes>
-        <Route path="/"                  element={<Home user={user} />} />
+        <Route path="/"                  element={<Home />} />
         <Route path="/blog/add-new"       element={<CreatePost user={user} />} />
         <Route path="/blog/edit/:id"      element={<EditPost user={user} />} />
         <Route path="/blog/:id"           element={<BlogDetail user={user} />} />
@@ -75,6 +78,7 @@ function App() {
           }
         />
       </Routes>
+      <Footer user={user} />
     </BrowserRouter>
   );
 }

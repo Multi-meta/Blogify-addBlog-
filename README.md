@@ -24,7 +24,7 @@
 - ✏️ **Rich Text Editor** — Write blogs using a TipTap-powered WYSIWYG editor with inline image uploads
 - 🖼️ **Cover Images** — Upload cover images for your blog posts
 - 📂 **Categorize Posts** — Assign a category and subcategory when creating or editing a blog
-- 📝 **Edit & Manage** — Edit your published posts from the sidebar
+- 📝 **Edit & Manage** — Edit your published posts from the profile menu
 
 ### For Admins
 - 🛡️ **Admin Dashboard** — View and manage all blogs and reported content
@@ -81,7 +81,7 @@ Blogify/
 ├── services/
 │   └── authentication.js     # JWT token creation & validation
 ├── scripts/
-│   └── migrateCategories.js  # One-time migration for existing blogs
+│   └── importFromProduction.js  # Copy live blogs into local MongoDB
 ├── public/
 │   └── uploads/              # Uploaded images
 └── client/                   # React frontend
@@ -93,9 +93,9 @@ Blogify/
     │   │   ├── BlogCard/             # Individual blog card
     │   │   ├── BlogGrid/             # Responsive blog grid
     │   │   ├── CategoryFilter/       # Category & subcategory filter
-    │   │   ├── Navbar/               # Navigation bar
-    │   │   ├── RichTextEditor/       # TipTap WYSIWYG editor
-    │   │   └── Sidebar/              # User profile & blog list
+    │   │   ├── Footer/               # Site footer with links & socials
+    │   │   ├── Navbar/               # Navigation bar + profile menu
+    │   │   └── RichTextEditor/       # TipTap WYSIWYG editor
     │   ├── pages/
     │   │   ├── Home/                 # Home page with blog grid & filters
     │   │   ├── BlogDetail/           # Single blog view with comments
@@ -138,9 +138,9 @@ Blogify/
    cd ..
    ```
 
-4. **Run the migration** (sets defaults for existing blogs)
+4. **(Optional) Load sample data** — copy the live site's blogs into your local MongoDB
    ```bash
-   node scripts/migrateCategories.js
+   node scripts/importFromProduction.js
    ```
 
 ### Running the App

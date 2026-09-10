@@ -14,8 +14,8 @@ const userSchema = new Schema({
         lowercase: true,
         trim: true,
         match: [
-            /^[a-zA-Z0-9._%+\-]+@[a-zA-Z0-9.\-]+\.[a-zA-Z]{2,}$/,
-            "Please enter a valid email address (e.g. name@example.com)"
+            /^[a-zA-Z][a-zA-Z0-9._%+\-]*@[a-zA-Z0-9.\-]+\.[a-zA-Z]{2,}$/,
+            "Email must start with a letter and be a valid format (e.g. name123@example.com)"
         ],
     },
     salt: {

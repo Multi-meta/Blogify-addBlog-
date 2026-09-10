@@ -31,9 +31,9 @@ src/
 │   ├── BlogCard/                 # Individual blog card
 │   ├── BlogGrid/                 # Responsive blog grid layout
 │   ├── CategoryFilter/           # Vertical category & subcategory filter
-│   ├── Navbar/                   # Top navigation bar
-│   ├── RichTextEditor/           # TipTap WYSIWYG editor
-│   └── Sidebar/                  # User profile & blog list
+│   ├── Footer/                   # Site footer with links & socials
+│   ├── Navbar/                   # Top navigation bar + profile menu
+│   └── RichTextEditor/           # TipTap WYSIWYG editor
 ├── pages/
 │   ├── Home/                     # Blog grid + category filter
 │   ├── BlogDetail/               # Single blog view with comments

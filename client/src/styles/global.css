@@ -12,14 +12,10 @@
   --color-white: #ffffff;
   --color-text: #1a1a2e;           /* Main text */
   --color-text-muted: #6b7280;     /* Muted / meta text */
-  --color-text-light: #9ca3af;
   --color-border: #e5e7eb;
-  --color-tag-bg: #eef2ff;
-  --color-tag-text: #4338ca;
   --color-btn-primary: #1a1f36;
   --color-btn-hover: #252b48;
   --color-danger: #ef4444;
-  --color-success: #10b981;
 
   /* Typography */
   --font-family: 'Segoe UI', 'Helvetica Neue', Arial, sans-serif;
@@ -44,7 +40,6 @@
   --radius-sm: 4px;
   --radius-md: 8px;
   --radius-lg: 12px;
-  --radius-pill: 999px;
 
   /* Shadows */
   --shadow-card: 0 2px 8px rgba(0, 0, 0, 0.08);
@@ -75,7 +70,18 @@ body {
   background-color: var(--color-bg);
   color: var(--color-text);
   line-height: 1.6;
+}
+
+#root {
+  display: flex;
+  flex-direction: column;
   min-height: 100vh;
+}
+
+/* Pages centre themselves with auto margins, which stops flex items
+   stretching — without this they shrink to fit their content */
+#root > * {
+  width: 100%;
 }
 
 a {
@@ -104,47 +110,4 @@ select {
 
 ul, ol {
   list-style: none;
-}
-
-/* ---- Utility classes ---- */
-.container {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 0 var(--spacing-lg);
-}
-
-.text-muted {
-  color: var(--color-text-muted);
-  font-size: var(--font-size-sm);
-}
-
-.btn {
-  display: inline-flex;
-  align-items: center;
-  gap: var(--spacing-xs);
-  padding: 0.4rem 1rem;
-  border-radius: var(--radius-sm);
-  font-size: var(--font-size-sm);
-  font-weight: 500;
-  transition: background var(--transition-fast), color var(--transition-fast);
-  cursor: pointer;
-  border: none;
-}
-
-.btn-primary {
-  background: var(--color-btn-primary);
-  color: var(--color-white);
-}
-.btn-primary:hover {
-  background: var(--color-btn-hover);
-}
-
-.btn-outline {
-  background: transparent;
-  color: var(--color-btn-primary);
-  border: 1.5px solid var(--color-btn-primary);
-}
-.btn-outline:hover {
-  background: var(--color-btn-primary);
-  color: var(--color-white);
 }

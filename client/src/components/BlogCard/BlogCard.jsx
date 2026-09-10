@@ -2,7 +2,7 @@
 // BlogCard Component
 // Displays a single blog post as a card
 // Props:
-//   blog: { _id, title, body, coverImageURL, categories,
+//   blog: { _id, title, body, coverImageURL,
 //            createdBy: { fullName, profileImageURL },
 //            createdAt }
 // ============================================================
@@ -33,7 +33,6 @@ function BlogCard({ blog }) {
     title,
     body,
     coverImageURL,
-    categories = [],
     createdBy,
     createdAt,
   } = blog;
@@ -56,17 +55,6 @@ function BlogCard({ blog }) {
 
       {/* Card Body */}
       <div className="blog-card__body">
-
-        {/* Category Tags */}
-        {categories.length > 0 && (
-          <div className="blog-card__tags">
-            {categories.map((cat, i) => (
-              <span key={i} className="blog-card__tag">
-                {cat}
-              </span>
-            ))}
-          </div>
-        )}
 
         {/* Title */}
         <h3 className="blog-card__title">{title}</h3>

@@ -5,16 +5,21 @@
 // ============================================================
 
 import { useState, useEffect, useCallback } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import BlogGrid from '../../components/BlogGrid/BlogGrid';
 import CategoryFilter from '../../components/CategoryFilter/CategoryFilter';
 import './Home.css';
 
-function Home({ user }) {
+function Home() {
   const [blogs, setBlogs] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
-  const [selectedCategory, setSelectedCategory] = useState('');
-  const [selectedSubcategory, setSelectedSubcategory] = useState('');
+
+  // Filters live in the URL (?category=X&subcategory=Y), so any link to "/"
+  // — Home, the Blogify logo, the footer — clears them
+  const [searchParams, setSearchParams] = useSearchParams();
+  const selectedCategory = searchParams.get('category') || '';
+  const selectedSubcategory = searchParams.get('subcategory') || '';
 
   const fetchBlogs = useCallback(() => {
     setLoading(true);
@@ -41,8 +46,10 @@ function Home({ user }) {
   }, [fetchBlogs]);
 
   function handleFilterChange(category, subcategory) {
-    setSelectedCategory(category);
-    setSelectedSubcategory(subcategory);
+    const params = {};
+    if (category) params.category = category;
+    if (subcategory) params.subcategory = subcategory;
+    setSearchParams(params);
   }
 
   return (
