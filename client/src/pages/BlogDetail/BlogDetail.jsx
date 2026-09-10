@@ -5,6 +5,7 @@
 
 import { useState, useEffect } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
+import DOMPurify from 'dompurify';
 import './BlogDetail.css';
 import '../../components/RichTextEditor/RichTextEditor.css';
 
@@ -177,10 +178,11 @@ function BlogDetail({ user }) {
         </div>
       </div>
 
-      {/* Body — rendered as HTML from the rich text editor */}
+      {/* Body — rendered as HTML from the rich text editor. The API accepts
+          any HTML, so scripts and event handlers are stripped first */}
       <div
         className="blog-detail__body blog-body-html"
-        dangerouslySetInnerHTML={{ __html: blog.body }}
+        dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(blog.body) }}
       />
 
       {/* ── Action Bar (Admin Delete + User Report) ── */}

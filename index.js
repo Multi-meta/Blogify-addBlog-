@@ -18,6 +18,8 @@ const app = express();
 const PORT = process.env.PORT || 8000;
 const MONGO_URI = process.env.MONGO_URI || "mongodb://127.0.0.1:27017/blogify";
 
+app.disable("x-powered-by"); // don't advertise the framework to attackers
+
 // ── CORS — allow React frontend to call this API ───────────────
 const cors = require("cors");
 app.use(
@@ -28,12 +30,19 @@ app.use(
 );
 
 // ── Database ───────────────────────────────────────────────────
+// Treat "$" keys in user input as plain values (blocks query-operator injection)
+mongoose.set("sanitizeFilter", true);
 mongoose
   .connect(MONGO_URI)
   .then(() => console.log("MongoDB Connected"))
   .catch((err) => console.error("MongoDB connection error:", err));
 
 // ── Middleware ─────────────────────────────────────────────────
+app.use((req, res, next) => {
+  // Stop browsers from guessing file types, e.g. treating an upload as HTML
+  res.set("X-Content-Type-Options", "nosniff");
+  next();
+});
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json()); // parse JSON bodies from React
 app.use(cookieParser());

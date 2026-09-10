@@ -77,11 +77,13 @@ Blogify/
 │   └── admin.js              # Admin-only routes (reports, blog management)
 ├── middlewares/
 │   ├── authentication.js     # JWT cookie verification
+│   ├── requireAuth.js        # Signed-in guard
 │   └── requireAdmin.js       # Admin role guard
 ├── services/
 │   └── authentication.js     # JWT token creation & validation
 ├── scripts/
-│   └── importFromProduction.js  # Copy live blogs into local MongoDB
+│   ├── importFromProduction.js  # Copy live blogs into local MongoDB
+│   └── resetPassword.js      # Set a new password for an account
 ├── public/
 │   └── uploads/              # Uploaded images
 └── client/                   # React frontend
