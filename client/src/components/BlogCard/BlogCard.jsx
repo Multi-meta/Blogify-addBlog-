@@ -20,6 +20,13 @@ function formatDate(dateStr) {
   });
 }
 
+// Strip HTML tags to get plain text for excerpts
+function stripHtml(htmlStr) {
+  if (!htmlStr) return '';
+  const doc = new DOMParser().parseFromString(htmlStr, 'text/html');
+  return doc.body.textContent || '';
+}
+
 function BlogCard({ blog }) {
   const {
     _id,
@@ -65,7 +72,7 @@ function BlogCard({ blog }) {
         <h3 className="blog-card__title">{title}</h3>
 
         {/* Excerpt */}
-        <p className="blog-card__excerpt">{body}</p>
+        <p className="blog-card__excerpt">{stripHtml(body)}</p>
 
         {/* Footer: Author + Read More */}
         <div className="blog-card__footer">

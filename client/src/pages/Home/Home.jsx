@@ -1,13 +1,12 @@
 // ============================================================
 // Home Page
 // Fetches real blogs from MongoDB via GET /api/blogs
-// Includes CategoryFilter below the blog grid
+// CategoryFilter in the right sidebar; user blogs moved to Navbar dropdown
 // ============================================================
 
 import { useState, useEffect, useCallback } from 'react';
 import BlogGrid from '../../components/BlogGrid/BlogGrid';
 import CategoryFilter from '../../components/CategoryFilter/CategoryFilter';
-import Sidebar from '../../components/Sidebar/Sidebar';
 import './Home.css';
 
 function Home({ user }) {
@@ -33,7 +32,7 @@ function Home({ user }) {
         if (data.success) setBlogs(data.blogs);
         else setError('Failed to load blogs.');
       })
-      .catch(() => setError('Could not connect to server. Make sure Express is running on port 8000.'))
+      .catch(() => setError('Could not connect to server. Make sure the backend is running.'))
       .finally(() => setLoading(false));
   }, [selectedCategory, selectedSubcategory]);
 
@@ -63,14 +62,13 @@ function Home({ user }) {
           <BlogGrid blogs={blogs} loading={loading} />
         </div>
 
-        {/* Right side: Category Filter + User Sidebar */}
+        {/* Right sidebar: Category Filter only */}
         <div className="home__sidebar">
           <CategoryFilter
             selectedCategory={selectedCategory}
             selectedSubcategory={selectedSubcategory}
             onFilterChange={handleFilterChange}
           />
-          {user && <Sidebar user={user} />}
         </div>
 
       </div>
