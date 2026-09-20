@@ -14,8 +14,9 @@ const TOKEN_LIFETIME = "7d";
 function createTokenForUser(user){
     const payload = {
         _id: user._id,
+        fullName: user.fullName,
         email: user.email,
-        profileImageURl: user.profileImageURl,
+        profileImageURL: user.profileImageURL,
         role: user.role,
     };
     const token = JWT.sign(payload, secret, { expiresIn: TOKEN_LIFETIME });

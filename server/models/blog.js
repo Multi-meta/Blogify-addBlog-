@@ -25,6 +25,8 @@ const blogSchema = new Schema({
         type: Schema.Types.ObjectId,
         ref: "user",
     },
+    createdAt: { type: Date },
+    updatedAt: { type: Date },
 }, {timestamps: true}
 );
 

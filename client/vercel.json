@@ -1,6 +1,17 @@
 {
   "rewrites": [
     {
+      "source": "/(.*)",
+      "has": [
+        {
+          "type": "header",
+          "key": "accept",
+          "value": "(?i).*text/html.*"
+        }
+      ],
+      "destination": "/index.html"
+    },
+    {
       "source": "/api/:path*",
       "destination": "https://blogify-addblog.onrender.com/api/:path*"
     },

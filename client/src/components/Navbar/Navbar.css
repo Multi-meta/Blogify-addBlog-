@@ -307,3 +307,24 @@
   color: var(--color-danger);
   border-color: var(--color-danger);
 }
+
+/* My Dashboard link in dropdown */
+.navbar__dropdown-dashboard {
+  display: block;
+  width: 100%;
+  padding: 0.45rem;
+  border-radius: var(--radius-sm);
+  background: transparent;
+  color: var(--color-text-muted);
+  font-size: var(--font-size-xs);
+  font-weight: 600;
+  text-align: center;
+  text-decoration: none;
+  transition: background var(--transition-fast), color var(--transition-fast);
+  margin-bottom: 0.35rem;
+}
+.navbar__dropdown-dashboard:hover {
+  background: #f0f4ff;
+  color: var(--color-primary);
+}
+

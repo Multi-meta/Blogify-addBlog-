@@ -1,9 +1,15 @@
 require("dotenv").config();
 
+const fs   = require("fs");
 const path = require("path");
 const express = require("express");
 const mongoose = require("mongoose");
 const cookieParser = require("cookie-parser");
+
+// Ensure upload directories exist before multer needs them
+fs.mkdirSync(path.resolve("./public/uploads/avatars"), { recursive: true });
+fs.mkdirSync(path.resolve("./public/uploads"),          { recursive: true });
+
 
 const Blog = require("./models/blog");
 const userRoute = require("./routes/user");

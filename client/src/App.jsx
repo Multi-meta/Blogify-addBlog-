@@ -15,6 +15,11 @@ import EditPost from './pages/EditPost/EditPost';
 import SignIn from './pages/SignIn/SignIn';
 import SignUp from './pages/SignUp/SignUp';
 import AdminDashboard from './pages/AdminDashboard/AdminDashboard';
+import AdminUsers from './pages/AdminUsers/AdminUsers';
+import AdminComments from './pages/AdminComments/AdminComments';
+import AdminBlogsThisWeek from './pages/AdminBlogsThisWeek/AdminBlogsThisWeek';
+import UserDashboard from './pages/UserDashboard/UserDashboard';
+import UserComments from './pages/UserComments/UserComments';
 import Footer from './components/Footer/Footer';
 import ScrollToTop from './components/ScrollToTop/ScrollToTop';
 
@@ -68,7 +73,12 @@ function App() {
         <Route path="/blog/:id"           element={<BlogDetail user={user} />} />
         <Route path="/user/signin"        element={<SignIn onLogin={handleLogin} />} />
         <Route path="/user/signup"        element={<SignUp onLogin={handleLogin} />} />
+        <Route path="/user/dashboard"     element={<UserDashboard user={user} onUserUpdate={setUser} />} />
+        <Route path="/user/comments"      element={<UserComments user={user} />} />
         <Route path="/admin/dashboard"    element={<AdminDashboard user={user} />} />
+        <Route path="/admin/users"        element={<AdminUsers user={user} />} />
+        <Route path="/admin/comments"     element={<AdminComments user={user} />} />
+        <Route path="/admin/blogs-this-week" element={<AdminBlogsThisWeek user={user} />} />
         <Route
           path="*"
           element={

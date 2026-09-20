@@ -6,6 +6,7 @@
 import { useState, useEffect } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import DOMPurify from 'dompurify';
+import { getFallbackCoverImage } from '../../data/categories';
 import './BlogDetail.css';
 import '../../components/RichTextEditor/RichTextEditor.css';
 
@@ -152,14 +153,14 @@ function BlogDetail({ user }) {
     <article className="blog-detail">
 
       {/* Cover Image */}
-      {blog.coverImageURL && (
-        <img
-          src={blog.coverImageURL}
-          alt={blog.title}
-          className="blog-detail__cover"
-          onError={(e) => { e.currentTarget.style.display = 'none'; }}
-        />
-      )}
+      <img
+        src={blog.coverImageURL || getFallbackCoverImage(blog.category, blog.subcategory)}
+        alt={blog.title}
+        className="blog-detail__cover"
+        onError={(e) => {
+          e.currentTarget.src = getFallbackCoverImage(blog.category, blog.subcategory);
+        }}
+      />
 
       {/* Title */}
       <h1 className="blog-detail__title">{blog.title}</h1>

@@ -5,6 +5,7 @@
 
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import PasswordInput from '../../components/PasswordInput/PasswordInput';
 import '../SignIn/Auth.css';
 
 function SignUp({ onLogin }) {
@@ -85,9 +86,8 @@ function SignUp({ onLogin }) {
 
           <div className="auth-form__field">
             <label className="auth-form__label" htmlFor="password">Password</label>
-            <input
-              id="password" name="password" type="password"
-              className="auth-form__input"
+            <PasswordInput
+              id="password" name="password"
               placeholder="At least 6 characters"
               value={form.password}
               onChange={handleChange}

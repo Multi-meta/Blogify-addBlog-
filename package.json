@@ -1,28 +1,19 @@
 {
   "name": "blogify",
   "version": "1.0.0",
-  "main": "index.js",
+  "private": true,
   "scripts": {
-    "dev": "concurrently \"nodemon index.js\" \"npm run dev --prefix client\"",
-    "server": "nodemon index.js",
+    "dev": "concurrently \"npm run dev --prefix server\" \"npm run dev --prefix client\"",
+    "server": "npm run dev --prefix server",
     "client": "npm run dev --prefix client",
-    "start": "node index.js"
+    "start": "npm start --prefix server",
+    "build": "npm run build --prefix client",
+    "install:all": "npm install --prefix server && npm install --prefix client"
   },
   "author": "",
   "license": "ISC",
   "description": "Blogify — React + Node.js blog platform",
-  "dependencies": {
-    "cookie-parser": "^1.4.7",
-    "cors": "^2.8.6",
-    "dotenv": "^17.4.2",
-    "express": "^5.1.0",
-    "jsonwebtoken": "^9.0.2",
-    "mongoose": "^8.17.1",
-    "multer": "^2.0.2"
-  },
   "devDependencies": {
-    "concurrently": "^10.0.5",
-    "nodemon": "^3.1.10"
-  },
-  "keywords": []
+    "concurrently": "^10.0.5"
+  }
 }

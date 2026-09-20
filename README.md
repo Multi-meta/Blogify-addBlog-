@@ -64,29 +64,31 @@
 
 ```
 Blogify/
-├── index.js                  # Express server entry point
-├── package.json
-├── models/
-│   ├── blog.js               # Blog schema (title, body, category, subcategory, cover)
-│   ├── comment.js            # Comment schema
-│   ├── report.js             # Report schema
-│   └── user.js               # User schema with auth helpers
-├── routes/
-│   ├── blog.js               # CRUD + comments + reports
-│   ├── user.js               # Sign in / Sign up / Logout / Me
-│   └── admin.js              # Admin-only routes (reports, blog management)
-├── middlewares/
-│   ├── authentication.js     # JWT cookie verification
-│   ├── requireAuth.js        # Signed-in guard
-│   └── requireAdmin.js       # Admin role guard
-├── services/
-│   └── authentication.js     # JWT token creation & validation
-├── scripts/
-│   ├── importFromProduction.js  # Copy live blogs into local MongoDB
-│   └── resetPassword.js      # Set a new password for an account
-├── public/
-│   └── uploads/              # Uploaded images
-└── client/                   # React frontend
+├── package.json               # Root orchestrator (runs server + client together)
+├── server/                    # Express backend
+│   ├── index.js               # Express server entry point
+│   ├── package.json
+│   ├── models/
+│   │   ├── blog.js            # Blog schema (title, body, category, subcategory, cover)
+│   │   ├── comment.js         # Comment schema
+│   │   ├── report.js          # Report schema
+│   │   └── user.js            # User schema with auth helpers
+│   ├── routes/
+│   │   ├── blog.js            # CRUD + comments + reports
+│   │   ├── user.js            # Sign in / Sign up / Logout / Me
+│   │   └── admin.js           # Admin-only routes (reports, blog management)
+│   ├── middlewares/
+│   │   ├── authentication.js  # JWT cookie verification
+│   │   ├── requireAuth.js     # Signed-in guard
+│   │   └── requireAdmin.js    # Admin role guard
+│   ├── services/
+│   │   └── authentication.js  # JWT token creation & validation
+│   ├── scripts/
+│   │   ├── importFromProduction.js  # Copy live blogs into local MongoDB
+│   │   └── resetPassword.js   # Set a new password for an account
+│   └── public/
+│       └── uploads/           # Uploaded images
+└── client/                    # React frontend
     ├── src/
     │   ├── App.jsx
     │   ├── data/
@@ -128,21 +130,28 @@ Blogify/
    cd Blogify
    ```
 
-2. **Install server dependencies**
+2. **Install root dependencies** (used to run server + client together)
    ```bash
    npm install
    ```
 
-3. **Install client dependencies**
+3. **Install server dependencies**
+   ```bash
+   cd server
+   npm install
+   cd ..
+   ```
+
+4. **Install client dependencies**
    ```bash
    cd client
    npm install
    cd ..
    ```
 
-4. **(Optional) Load sample data** — copy the live site's blogs into your local MongoDB
+5. **(Optional) Load sample data** — copy the live site's blogs into your local MongoDB
    ```bash
-   node scripts/importFromProduction.js
+   node server/scripts/importFromProduction.js
    ```
 
 ### Running the App

@@ -5,6 +5,7 @@
 
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import PasswordInput from '../../components/PasswordInput/PasswordInput';
 import '../SignIn/Auth.css';
 
 function SignIn({ onLogin }) {
@@ -70,9 +71,8 @@ function SignIn({ onLogin }) {
 
           <div className="auth-form__field">
             <label className="auth-form__label" htmlFor="password">Password</label>
-            <input
-              id="password" name="password" type="password"
-              className="auth-form__input"
+            <PasswordInput
+              id="password" name="password"
               placeholder="••••••••"
               value={form.password}
               onChange={handleChange}

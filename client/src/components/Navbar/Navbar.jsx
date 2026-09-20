@@ -192,6 +192,15 @@ function Navbar({ user, onLogout }) {
 
                     <div className="navbar__dropdown-divider" />
 
+                    {/* My Dashboard link */}
+                    <Link
+                      to="/user/dashboard"
+                      className="navbar__dropdown-dashboard"
+                      onClick={() => setDropdownOpen(false)}
+                    >
+                      📊 My Dashboard
+                    </Link>
+
                     {/* Sign out */}
                     <button
                       className="navbar__dropdown-signout"

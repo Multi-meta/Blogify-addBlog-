@@ -8,6 +8,7 @@
 // ============================================================
 
 import { Link } from 'react-router-dom';
+import { getFallbackCoverImage } from '../../data/categories';
 import './BlogCard.css';
 
 // Format date: "Nov 11, 2023"
@@ -33,9 +34,13 @@ function BlogCard({ blog }) {
     title,
     body,
     coverImageURL,
+    category,
+    subcategory,
     createdBy,
     createdAt,
   } = blog;
+
+  const fallbackImage = getFallbackCoverImage(category, subcategory);
 
   return (
     <article className="blog-card">
@@ -43,12 +48,12 @@ function BlogCard({ blog }) {
       {/* Cover Image */}
       <div className="blog-card__image-wrap">
         <img
-          src={coverImageURL}
+          src={coverImageURL || fallbackImage}
           alt={title}
           className="blog-card__image"
           loading="lazy"
           onError={(e) => {
-            e.currentTarget.src = 'https://placehold.co/400x250?text=No+Image';
+            e.currentTarget.src = fallbackImage;
           }}
         />
       </div>

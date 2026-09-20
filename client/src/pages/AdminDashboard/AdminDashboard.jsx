@@ -18,13 +18,15 @@ function formatDate(d) {
 function AdminDashboard({ user }) {
   const navigate = useNavigate();
 
-  const [reports, setReports]       = useState([]);
-  const [blogs, setBlogs]           = useState([]);
-  const [loadingReports, setLR]     = useState(true);
-  const [loadingBlogs, setLB]       = useState(true);
-  const [error, setError]           = useState('');
-  const [dismissing, setDismissing] = useState(null); // report id being dismissed
-  const [deleting, setDeleting]     = useState(null); // blog id being deleted
+  const [reports,       setReports]       = useState([]);
+  const [blogs,         setBlogs]         = useState([]);
+  const [adminStats,    setAdminStats]    = useState(null);
+  const [loadingReports, setLR]           = useState(true);
+  const [loadingBlogs,   setLB]           = useState(true);
+  const [loadingStats,   setLS]           = useState(true);
+  const [error,          setError]        = useState('');
+  const [dismissing,     setDismissing]   = useState(null);
+  const [deleting,       setDeleting]     = useState(null);
 
   // Guard: redirect non-admins
   useEffect(() => {
@@ -50,12 +52,23 @@ function AdminDashboard({ user }) {
       .finally(() => setLB(false));
   }, []);
 
+  const fetchStats = useCallback(() => {
+    setLS(true);
+    fetch('/admin/stats', { credentials: 'include' })
+      .then((r) => r.json())
+      .then((d) => { if (d.success) setAdminStats(d.stats); })
+      .catch(() => {})
+      .finally(() => setLS(false));
+  }, []);
+
   useEffect(() => {
     if (user?.role === 'ADMIN') {
       fetchReports();
       fetchBlogs();
+      fetchStats();
     }
-  }, [user, fetchReports, fetchBlogs]);
+  }, [user, fetchReports, fetchBlogs, fetchStats]);
+
 
   async function handleDismiss(reportId) {
     setDismissing(reportId);
@@ -106,8 +119,79 @@ function AdminDashboard({ user }) {
 
       {error && <div className="admin-error">⚠️ {error}</div>}
 
+      {/* ── Stats Section ── */}
+      <section style={{ marginBottom: '2.5rem' }}>
+        <h2 className="admin-section__title">📊 Platform Statistics</h2>
+        {loadingStats ? (
+          <p style={{ color: 'var(--color-text-muted)', fontSize: 'var(--font-size-sm)' }}>
+            Loading stats...
+          </p>
+        ) : (
+          <div className="admin-stats-grid">
+            {/* Total Users → /admin/users */}
+            <Link to="/admin/users" className="stat-card stat-card--link">
+              <div className="stat-card__icon">👥</div>
+              <div className="stat-card__value">{adminStats?.totalUsers ?? '—'}</div>
+              <div className="stat-card__label">Total Users</div>
+              <div className="stat-card__arrow">View all →</div>
+            </Link>
+
+            {/* Total Blogs → scroll to all-blogs section */}
+            <a href="#all-blogs" className="stat-card stat-card--link">
+              <div className="stat-card__icon">📝</div>
+              <div className="stat-card__value">{adminStats?.totalBlogs ?? '—'}</div>
+              <div className="stat-card__label">Total Blogs</div>
+              <div className="stat-card__arrow">See below ↓</div>
+            </a>
+
+            {/* Total Comments → /admin/comments */}
+            <Link to="/admin/comments" className="stat-card stat-card--link">
+              <div className="stat-card__icon">💬</div>
+              <div className="stat-card__value">{adminStats?.totalComments ?? '—'}</div>
+              <div className="stat-card__label">Total Comments</div>
+              <div className="stat-card__arrow">View all →</div>
+            </Link>
+
+            {/* Pending Reports → scroll to reports section */}
+            <a href="#reports" className="stat-card stat-card--link">
+              <div className="stat-card__icon">🚩</div>
+              <div className="stat-card__value">{adminStats?.pendingReports ?? '—'}</div>
+              <div className="stat-card__label">Pending Reports</div>
+              <div className="stat-card__arrow">See below ↓</div>
+            </a>
+
+            {/* Blogs This Week → /admin/blogs-this-week */}
+            <Link to="/admin/blogs-this-week" className="stat-card stat-card--link">
+              <div className="stat-card__icon">📈</div>
+              <div className="stat-card__value">{adminStats?.blogsThisWeek ?? '—'}</div>
+              <div className="stat-card__label">Blogs This Week</div>
+              <div className="stat-card__arrow">View all →</div>
+            </Link>
+
+            {/* Top Category → home with filter */}
+            <Link
+              to={adminStats?.topCategories?.[0] ? `/?category=${encodeURIComponent(adminStats.topCategories[0].category)}` : '/'}
+              className="stat-card stat-card--link"
+            >
+              <div className="stat-card__icon">🏷️</div>
+              <div className="stat-card__value" style={{ fontSize: 'var(--font-size-lg)' }}>
+                {adminStats?.topCategories?.[0]?.category || '—'}
+              </div>
+              <div className="stat-card__label">Top Category</div>
+              {adminStats?.topCategories?.[0] && (
+                <div className="stat-card__sub">
+                  {adminStats.topCategories[0].count} blog{adminStats.topCategories[0].count !== 1 ? 's' : ''}
+                </div>
+              )}
+              <div className="stat-card__arrow">Browse →</div>
+            </Link>
+          </div>
+        )}
+      </section>
+
       {/* ── Reports Section ── */}
-      <section style={{ marginBottom: '3rem' }}>
+      <section id="reports" style={{ marginBottom: '3rem' }}>
+
         <h2 className="admin-section__title">
           🚩 Pending Reports
           {reports.length > 0 && (
@@ -161,7 +245,7 @@ function AdminDashboard({ user }) {
       </section>
 
       {/* ── All Blogs Section ── */}
-      <section>
+      <section id="all-blogs">
         <h2 className="admin-section__title">
           📝 All Blogs ({blogs.length})
         </h2>

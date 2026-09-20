@@ -1,9 +1,11 @@
 # Dependencies
 node_modules/
+server/node_modules/
 client/node_modules/
 
 # Environment variables — NEVER commit real secrets
 .env
+server/.env
 client/.env
 
 # Build output
