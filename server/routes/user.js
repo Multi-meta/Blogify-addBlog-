@@ -226,7 +226,8 @@ router.get("/comments-received", requireAuth, async (req, res) => {
         const blogTitleMap = {};
         blogs.forEach((b) => { blogTitleMap[String(b._id)] = b.title; });
 
-        const comments = await Comment.find({ blogId: { $in: blogIds } })
+        const comments = await Comment.find()
+            .where("blogId").in(blogIds)
             .populate("createdBy", "fullName profileImageURL")
             .sort({ createdAt: -1 })
             .lean();
