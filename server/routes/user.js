@@ -1,4 +1,5 @@
 const { Router } = require("express");
+const mongoose = require("mongoose");
 const crypto = require("crypto");
 const path   = require("path");
 const multer = require("multer");
@@ -226,8 +227,7 @@ router.get("/comments-received", requireAuth, async (req, res) => {
         const blogTitleMap = {};
         blogs.forEach((b) => { blogTitleMap[String(b._id)] = b.title; });
 
-        const comments = await Comment.find()
-            .where("blogId").in(blogIds)
+        const comments = await Comment.find({ blogId: mongoose.trusted({ $in: blogIds }) })
             .populate("createdBy", "fullName profileImageURL")
             .sort({ createdAt: -1 })
             .lean();
