@@ -152,7 +152,7 @@ async function main() {
     throw new Error("Refusing to seed a non-local database (demo accounts have known passwords). Set SEED_ALLOW_REMOTE=true only if you really mean it.");
   }
   await mongoose.connect(MONGO_URI);
-  console.log(`Connected to ${MONGO_URI}`);
+  console.log(`Connected to ${MONGO_URI.replace(/\/\/[^@/]+@/, "//***@")}`); // never print the password
   await seedDefaultPlans();
 
   const plans = await Plan.find({ isActive: true }).sort({ rank: 1 });
