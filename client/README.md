@@ -7,6 +7,7 @@ The frontend for **Blogify**, built with **React 19** and **Vite 8**.
 - **React 19** — UI library
 - **React Router 7** — Client-side routing
 - **TipTap** — Rich text (WYSIWYG) editor with inline image uploads
+- **Stripe.js + React Stripe** — Card form for subscription payments (Stripe test mode)
 - **Vite 8** — Build tool with HMR and API proxy
 - **Oxlint** — Linting
 
@@ -33,7 +34,9 @@ src/
 │   ├── CategoryFilter/           # Vertical category & subcategory filter
 │   ├── Footer/                   # Site footer with links & socials
 │   ├── Navbar/                   # Top navigation bar + profile menu
-│   └── RichTextEditor/           # TipTap WYSIWYG editor
+│   ├── RichTextEditor/           # TipTap WYSIWYG editor (incl. Travel Guide button)
+│   ├── GuideForm/                # Title + sections form for community travel guides
+│   └── StripeCheckout/           # Stripe card form shown in the subscription popup
 ├── pages/
 │   ├── Home/                     # Blog grid + category filter
 │   ├── BlogDetail/               # Single blog view with comments
@@ -41,7 +44,14 @@ src/
 │   ├── EditPost/                 # Edit blog with category selection
 │   ├── SignIn/                   # Sign in form
 │   ├── SignUp/                   # Sign up form
-│   └── AdminDashboard/          # Admin content moderation
+│   ├── AdminDashboard/           # Admin content moderation
+│   ├── TravelIndex/              # Public list of destinations
+│   ├── TravelPlan/               # A destination's travel guide (sign-in + plan gated)
+│   ├── TravelContribute/         # Users write their own travel guide
+│   ├── Subscription/             # Plans, checkout popup, payment history
+│   └── AdminTravel/              # Admin: plans, destinations, guides, reports, users, revenue
+├── utils/
+│   └── api.js                    # Small fetch helper (throws on API errors)
 └── styles/
     └── global.css                # Design system & CSS variables
 ```

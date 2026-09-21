@@ -15,8 +15,9 @@
 //
 // It uses the same models and services as the website. Set MONGO_URI to
 // seed a different database (default: the site's own local database).
-// Only local databases are allowed unless SEED_ALLOW_REMOTE=true, because the
-// demo accounts (including an admin) have passwords that are written in this file.
+// Only local databases are allowed unless SEED_ALLOW_REMOTE=true. The demo admin's
+// password is written in this file, so on a remote database it is replaced by a
+// random one (or SEED_ADMIN_PASSWORD) and printed once at the end.
 // ============================================================
 
 const mongoose = require("mongoose");
@@ -35,9 +36,15 @@ const { recordUnlocks } = require("../services/guides");
 const destinations = require("./travelDemoData");
 
 const MONGO_URI = process.env.MONGO_URI || "mongodb://127.0.0.1:27017/blogify";
+const IS_LOCAL = /^mongodb:\/\/(127\.0\.0\.1|localhost)[:/]/.test(MONGO_URI);
+
+// Local: a known, documented admin password. Remote: never a password that sits in a public repo.
+const ADMIN_PASSWORD =
+  process.env.SEED_ADMIN_PASSWORD ||
+  (IS_LOCAL ? "TravelAdmin@123" : require("crypto").randomBytes(9).toString("base64url") + "!9a");
 
 const ACCOUNTS = {
-  admin:    { fullName: "Travel Admin",  email: "traveladmin@example.com",    password: "TravelAdmin@123",    role: "ADMIN" },
+  admin:    { fullName: "Travel Admin",  email: "traveladmin@example.com",    password: ADMIN_PASSWORD,      role: "ADMIN" },
   tester:   { fullName: "Travel Tester", email: "traveltest@example.com",     password: "TravelTest@123",     role: "USER" },
   reporter: { fullName: "Riya Reporter", email: "travelreporter@example.com", password: "TravelReporter@123", role: "USER" },
 };
@@ -141,8 +148,7 @@ function userGuides(destBySlug, plansByRank, users) {
 async function main() {
   // The demo accounts have known passwords (they are printed in the README/hand-off),
   // so never let this run against a shared or production database by accident.
-  const isLocal = /^mongodb:\/\/(127\.0\.0\.1|localhost)[:/]/.test(MONGO_URI);
-  if (!isLocal && process.env.SEED_ALLOW_REMOTE !== "true") {
+  if (!IS_LOCAL && process.env.SEED_ALLOW_REMOTE !== "true") {
     throw new Error("Refusing to seed a non-local database (demo accounts have known passwords). Set SEED_ALLOW_REMOTE=true only if you really mean it.");
   }
   await mongoose.connect(MONGO_URI);
@@ -280,6 +286,8 @@ async function main() {
   );
   console.log(reported ? "Created the pending report." : "Report already exists.");
 
+  console.log("\nLogins created (change or delete these before sharing the site widely):");
+  for (const a of Object.values(ACCOUNTS)) console.log(`  ${a.role.padEnd(5)}  ${a.email}  /  ${a.password}`);
   console.log("\nDone.");
   await mongoose.disconnect();
 }

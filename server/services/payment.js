@@ -133,14 +133,15 @@ const providers = {
 
 // getProvider()           -> the provider new payments use (PAYMENT_PROVIDER)
 // getProvider("stripe")   -> a specific one, e.g. to refund a payment made with it
-function getProvider(which) {
+// A refund never grants anything, so old "mock" payments stay refundable even in production.
+function getProvider(which, { forRefund = false } = {}) {
   const name = (which || process.env.PAYMENT_PROVIDER || "mock").toLowerCase();
   const provider = providers[name];
   if (!provider) throw new Error(`Unknown PAYMENT_PROVIDER "${name}".`);
 
   // The mock provider grants access for free, so it must never be reachable
   // on the live site unless someone opts in on purpose.
-  if (name === "mock" && isProduction && process.env.ALLOW_MOCK_PAYMENTS !== "true") {
+  if (name === "mock" && isProduction && !forRefund && process.env.ALLOW_MOCK_PAYMENTS !== "true") {
     throw new Error("Payments are not enabled yet.");
   }
   return { name, ...provider };

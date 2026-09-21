@@ -96,7 +96,7 @@ async function refundPayment(payment, reason) {
   // since switched provider (e.g. earlier test payments made with "mock").
   let provider;
   try {
-    provider = getProvider(payment.gateway);
+    provider = getProvider(payment.gateway, { forRefund: true });
   } catch (error) {
     throw new HttpError(503, error.message);
   }
