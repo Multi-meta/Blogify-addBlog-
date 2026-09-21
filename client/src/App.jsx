@@ -20,6 +20,12 @@ import AdminComments from './pages/AdminComments/AdminComments';
 import AdminBlogsThisWeek from './pages/AdminBlogsThisWeek/AdminBlogsThisWeek';
 import UserDashboard from './pages/UserDashboard/UserDashboard';
 import UserComments from './pages/UserComments/UserComments';
+import Subscription from './pages/Subscription/Subscription';
+import TravelIndex from './pages/TravelIndex/TravelIndex';
+import TravelPlan from './pages/TravelPlan/TravelPlan';
+import TravelContribute from './pages/TravelContribute/TravelContribute';
+import AdminTravel from './pages/AdminTravel/AdminTravel';
+import AdminDestination from './pages/AdminTravel/AdminDestination';
 import Footer from './components/Footer/Footer';
 import ScrollToTop from './components/ScrollToTop/ScrollToTop';
 
@@ -79,6 +85,12 @@ function App() {
         <Route path="/admin/users"        element={<AdminUsers user={user} />} />
         <Route path="/admin/comments"     element={<AdminComments user={user} />} />
         <Route path="/admin/blogs-this-week" element={<AdminBlogsThisWeek user={user} />} />
+        <Route path="/admin/travel"       element={<AdminTravel user={user} />} />
+        <Route path="/admin/travel/destinations/:id" element={<AdminDestination user={user} />} />
+        <Route path="/subscription"      element={<Subscription user={user} />} />
+        <Route path="/travel"            element={<TravelIndex user={user} />} />
+        <Route path="/travel/:slug"      element={<TravelPlan user={user} />} />
+        <Route path="/travel/:slug/contribute" element={<TravelContribute user={user} />} />
         <Route
           path="*"
           element={

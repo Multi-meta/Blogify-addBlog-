@@ -25,6 +25,7 @@ function AdminDashboard({ user }) {
   const [loadingBlogs,   setLB]           = useState(true);
   const [loadingStats,   setLS]           = useState(true);
   const [error,          setError]        = useState('');
+  const [guideReports,   setGuideReports]  = useState(null); // pending travel-guide reports
   const [dismissing,     setDismissing]   = useState(null);
   const [deleting,       setDeleting]     = useState(null);
 
@@ -66,6 +67,10 @@ function AdminDashboard({ user }) {
       fetchReports();
       fetchBlogs();
       fetchStats();
+      fetch('/admin/guide-reports?status=pending', { credentials: 'include' })
+        .then((res) => res.json())
+        .then((d) => { if (d.success) setGuideReports(d.pending); })
+        .catch(() => {});
     }
   }, [user, fetchReports, fetchBlogs, fetchStats]);
 
@@ -168,6 +173,22 @@ function AdminDashboard({ user }) {
               <div className="stat-card__arrow">View all →</div>
             </Link>
 
+            {/* Travel plans & subscriptions → /admin/travel */}
+            <Link to="/admin/travel" className="stat-card stat-card--link">
+              <div className="stat-card__icon">🧳</div>
+              <div className="stat-card__value" style={{ fontSize: 'var(--font-size-lg)' }}>Travel &amp; Plans</div>
+              <div className="stat-card__label">Subscriptions, destinations, rate cards</div>
+              <div className="stat-card__arrow">Manage →</div>
+            </Link>
+
+            {/* Reported travel guides → review + refund */}
+            <Link to="/admin/travel?tab=reports" className="stat-card stat-card--link">
+              <div className="stat-card__icon">🚩</div>
+              <div className="stat-card__value">{guideReports ?? '—'}</div>
+              <div className="stat-card__label">Reported Travel Guides</div>
+              <div className="stat-card__arrow">Review →</div>
+            </Link>
+
             {/* Top Category → home with filter */}
             <Link
               to={adminStats?.topCategories?.[0] ? `/?category=${encodeURIComponent(adminStats.topCategories[0].category)}` : '/'}
@@ -218,18 +239,34 @@ function AdminDashboard({ user }) {
                     Reported by <strong>{report.reportedBy?.fullName}</strong>
                     {' '}({report.reportedBy?.email}) · {formatDate(report.createdAt)}
                   </div>
+                  {report.commentId && (
+                    <div className="admin-report-card__meta">
+                      💬 Reported comment by <strong>{report.commentId.createdBy?.fullName || 'Unknown'}</strong>:
+                      {' '}"{report.commentId.content}"
+                    </div>
+                  )}
                   <span className="admin-report-card__reason">
                     "{report.reason}"
                   </span>
                 </div>
                 <div className="admin-report-card__actions">
-                  <button
-                    className="admin-btn admin-btn--danger"
-                    onClick={() => handleDeleteBlog(report.blogId?._id)}
-                    disabled={deleting === report.blogId?._id}
-                  >
-                    {deleting === report.blogId?._id ? 'Deleting...' : 'Delete Blog'}
-                  </button>
+                  {report.commentId ? (
+                    <Link
+                      to={`/blog/${report.blogId?._id}`}
+                      className="admin-btn admin-btn--ghost"
+                      style={{ textDecoration: 'none', textAlign: 'center' }}
+                    >
+                      Review Comment
+                    </Link>
+                  ) : (
+                    <button
+                      className="admin-btn admin-btn--danger"
+                      onClick={() => handleDeleteBlog(report.blogId?._id)}
+                      disabled={deleting === report.blogId?._id}
+                    >
+                      {deleting === report.blogId?._id ? 'Deleting...' : 'Delete Blog'}
+                    </button>
+                  )}
                   <button
                     className="admin-btn admin-btn--ghost"
                     onClick={() => handleDismiss(report._id)}

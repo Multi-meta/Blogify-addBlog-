@@ -126,3 +126,52 @@
 .blog-body-html strong { font-weight: 700; }
 .blog-body-html em { font-style: italic; }
 .blog-body-html u { text-decoration: underline; }
+
+/* ---- "Travel Guide" button: a link to /travel/<slug>, shown as a button ---- */
+.ProseMirror a[href^="/travel/"],
+.blog-body-html a[href^="/travel/"] {
+  display: inline-block;
+  padding: 0.55rem 1.3rem;
+  background: var(--color-accent);
+  color: #1a1a1a;
+  font-weight: 700;
+  font-size: 0.95rem;
+  text-decoration: none;
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-card);
+  transition: background var(--transition-fast), transform var(--transition-fast);
+}
+.ProseMirror a[href^="/travel/"]::before,
+.blog-body-html a[href^="/travel/"]::before { content: '🧳 '; }
+.blog-body-html a[href^="/travel/"]:hover { background: #b8963f; transform: translateY(-1px); }
+
+/* Toolbar dropdown for inserting the button */
+.rich-editor__trip { position: relative; display: inline-block; }
+.rich-editor__trip-menu {
+  position: absolute;
+  top: calc(100% + 4px);
+  right: 0; /* the button is at the toolbar's right end; open leftwards so the editor doesn't clip it */
+  z-index: 20;
+  min-width: 240px;
+  max-height: 260px;
+  overflow-y: auto;
+  background: var(--color-white);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-card-hover);
+  padding: 0.4rem;
+}
+.rich-editor__trip-title { font-size: var(--font-size-xs); font-weight: 700; color: var(--color-text-muted); padding: 0.25rem 0.5rem; text-transform: uppercase; letter-spacing: 0.04em; }
+.rich-editor__trip-empty { font-size: var(--font-size-sm); color: var(--color-text-muted); padding: 0.4rem 0.5rem; }
+.rich-editor__trip-item {
+  display: block;
+  width: 100%;
+  text-align: left;
+  background: none;
+  border: none;
+  padding: 0.45rem 0.5rem;
+  font-size: var(--font-size-sm);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+}
+.rich-editor__trip-item:hover { background: #f3f4f6; }

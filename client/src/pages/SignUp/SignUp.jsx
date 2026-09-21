@@ -4,12 +4,15 @@
 // ============================================================
 
 import { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useSearchParams } from 'react-router-dom';
+import { safeNext } from '../../utils/api';
 import PasswordInput from '../../components/PasswordInput/PasswordInput';
 import '../SignIn/Auth.css';
 
 function SignUp({ onLogin }) {
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const next = safeNext(searchParams.get('next'));
   const [form, setForm] = useState({ fullName: '', email: '', password: '' });
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
@@ -39,7 +42,7 @@ function SignUp({ onLogin }) {
 
       if (res.ok && data.success) {
         onLogin(data.user);
-        navigate('/');
+        navigate(next || '/');
       } else {
         setError(data.error || 'Could not create account. Email may already be in use.');
       }
@@ -102,7 +105,7 @@ function SignUp({ onLogin }) {
 
         <div className="auth-card__footer">
           Already have an account?{' '}
-          <Link to="/user/signin">Sign in</Link>
+          <Link to={next ? `/user/signin?next=${encodeURIComponent(next)}` : '/user/signin'}>Sign in</Link>
         </div>
       </div>
     </div>

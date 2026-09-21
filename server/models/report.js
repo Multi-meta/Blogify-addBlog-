@@ -10,6 +10,11 @@ const reportSchema = new Schema(
         blogTitle: {
             type: String,
         },
+        // Set only when the report targets a comment on the blog (not the blog itself)
+        commentId: {
+            type: Schema.Types.ObjectId,
+            ref: "comment",
+        },
         reportedBy: {
             type: Schema.Types.ObjectId,
             ref: "user",

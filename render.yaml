@@ -13,4 +13,13 @@ services:
         sync: false   # Set this in Render dashboard — your MongoDB Atlas URI
       - key: JWT_SECRET
         sync: false   # Set this in Render dashboard — a strong random string
+      # Payments via Stripe (test mode). Keys are set in the Render dashboard, never here.
+      - key: PAYMENT_PROVIDER
+        value: stripe
+      - key: STRIPE_SECRET_KEY
+        sync: false   # sk_test_... (test mode only; live keys are refused by the server)
+      - key: STRIPE_PUBLISHABLE_KEY
+        sync: false   # pk_test_...
+      - key: STRIPE_WEBHOOK_SECRET
+        sync: false   # whsec_... from the Stripe dashboard webhook endpoint for this service
     healthCheckPath: /api/blogs

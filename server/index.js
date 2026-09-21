@@ -15,6 +15,11 @@ const Blog = require("./models/blog");
 const userRoute = require("./routes/user");
 const blogRoute = require("./routes/blog");
 const adminRoute = require("./routes/admin");
+const adminTravelRoute = require("./routes/adminTravel");
+const subscriptionRoute = require("./routes/subscription");
+const stripeWebhook = require("./routes/stripeWebhook");
+const travelRoute = require("./routes/travel");
+const { seedDefaultPlans } = require("./services/subscription");
 
 const {
   checkForAuthenticationCookie,
@@ -41,6 +46,7 @@ mongoose.set("sanitizeFilter", true);
 mongoose
   .connect(MONGO_URI)
   .then(() => console.log("MongoDB Connected"))
+  .then(seedDefaultPlans)
   .catch((err) => console.error("MongoDB connection error:", err));
 
 // ── Middleware ─────────────────────────────────────────────────
@@ -49,6 +55,9 @@ app.use((req, res, next) => {
   res.set("X-Content-Type-Options", "nosniff");
   next();
 });
+// Stripe signs the exact bytes it sends, so this one route must get the raw body,
+// before express.json() turns it into an object.
+app.post("/api/subscription/stripe/webhook", express.raw({ type: "application/json" }), stripeWebhook);
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json()); // parse JSON bodies from React
 app.use(cookieParser());
@@ -89,6 +98,9 @@ app.get("/api/my-blogs", async (req, res) => {
 app.use("/user", userRoute);
 app.use("/blog", blogRoute);
 app.use("/admin", adminRoute);
+app.use("/admin", adminTravelRoute); // subscription plans, destinations, rate cards
+app.use("/api", subscriptionRoute);  // /api/plans, /api/subscription/*
+app.use("/api/travel", travelRoute);
 
 // ── Start Server ───────────────────────────────────────────────
 app.listen(PORT, () => console.log(`Server Started at PORT: ${PORT}`));

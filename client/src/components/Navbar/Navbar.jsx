@@ -67,6 +67,27 @@ function Navbar({ user, onLogout }) {
             </NavLink>
           </li>
 
+          <li>
+            <NavLink
+              to="/travel"
+              className={({ isActive }) =>
+                'navbar__link' + (isActive ? ' navbar__link--active' : '')
+              }
+            >
+              Travel Guides
+            </NavLink>
+          </li>
+          <li>
+            <NavLink
+              to="/subscription"
+              className={({ isActive }) =>
+                'navbar__link' + (isActive ? ' navbar__link--active' : '')
+              }
+            >
+              Pricing
+            </NavLink>
+          </li>
+
           {user && (
             <li>
               <NavLink

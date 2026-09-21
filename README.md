@@ -32,6 +32,21 @@
 
 ---
 
+## 🧳 Travel Guides & Subscriptions
+
+Free destination articles lead into paid, step-by-step **travel guides**. Everything below is managed from **Admin → Travel & Plans** (`/admin/travel`) — nothing is hardcoded.
+
+- **Plans** — monthly plans (seeded on first run: Basic ₹49, Premium ₹99, Ultimate ₹159). Each has a price, duration, feature list and an **access level (rank)**; a plan unlocks everything at its level *and below*.
+- **Destinations** — each has travel content (routes, hotels, rentals, guides, restaurants, expenses, itinerary…) and a **rate card**. Every item picks the plan that unlocks it.
+- **Travel Guide button** — appears automatically under the heading of any destination linked to a post (matched by name, e.g. "1. Warangal Fort – …"), or place it by hand with 🧳 in the post editor. Clicking it: sign in → subscribe → travel guide.
+- **Community guides** — any signed-in user can write a guide for a destination (`/travel/<slug>/contribute`). It is stored under their account, hidden until an admin approves it, and the admin picks which plan unlocks it. Admin edits, approves, rejects or removes it under **Admin → Travel & Plans → Community Guides**.
+- **Reports** — subscribers can report a community guide (incorrect / outdated / misleading / incomplete / other). Admins rule on it under **Guide Reports** (mark correct / incorrect, approve / reject, edit or remove the guide). When a guide is found incorrect the reporter can be refunded 100% (`refund()` in `services/payment.js`; the mock provider works, Razorpay is a TODO).
+- **Revenue tracking** — a subscription's money is split equally between the content that subscriber was shown; the author's share of a community guide is `GUIDE_CREATOR_SHARE_PERCENT` (server env, default 50). Shown to admins only.
+- **Locked content stays on the server** — higher-tier items reach the browser only as an upgrade prompt (no title, details or prices).
+- **Payments** — provider-agnostic (`server/services/payment.js`). `mock` needs no setup; **Stripe (test mode)** is built in: set `PAYMENT_PROVIDER=stripe` plus the Stripe keys in `server/.env` (see `.env.example`), and run `server/scripts/stripe-listen.cmd` while testing so Stripe's webhook reaches your machine. Test card: `4242 4242 4242 4242`. Admin refunds go back through Stripe. Razorpay is a matter of filling in two functions. Payment history, expiry, renewal and pro-rated upgrades are already handled.
+
+---
+
 ## 🏷️ Blog Categories
 
 | Category | Subcategories |

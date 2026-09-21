@@ -1,0 +1,50 @@
+/* Guide form — used on the contribute page and in the admin guide editor */
+.gf { display: flex; flex-direction: column; gap: var(--spacing-sm); }
+.gf__label { font-size: var(--font-size-xs); font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em; color: var(--color-text-muted); }
+.gf__input {
+  width: 100%;
+  padding: 0.5rem 0.7rem;
+  border: 1.5px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  font-size: var(--font-size-sm);
+  font-family: inherit;
+  background: #fff;
+  box-sizing: border-box;
+}
+textarea.gf__input { resize: vertical; }
+.gf__input:focus { outline: none; border-color: var(--color-accent); }
+.gf__section {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-sm);
+  padding: var(--spacing-md);
+  background: #f9fafb;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+}
+.gf__section-head { display: flex; gap: var(--spacing-sm); align-items: center; }
+.gf__section-head select { flex: 1; }
+.gf__link { background: none; border: none; color: #b91c1c; font-weight: 600; font-size: var(--font-size-sm); cursor: pointer; }
+.gf__add {
+  align-self: flex-start;
+  background: none;
+  border: 1.5px dashed var(--color-border);
+  border-radius: var(--radius-md);
+  padding: 0.45rem 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  color: var(--color-text);
+}
+.gf__add:hover { border-color: var(--color-accent); }
+.gf__actions { display: flex; gap: var(--spacing-sm); margin-top: var(--spacing-sm); }
+.gf__btn {
+  padding: 0.55rem 1.3rem;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--color-border);
+  background: #f3f4f6;
+  font-weight: 700;
+  cursor: pointer;
+}
+.gf__btn--primary { background: var(--color-accent); border-color: var(--color-accent); color: #1a1a1a; }
+.gf__btn:disabled { opacity: 0.6; cursor: not-allowed; }
+.gf__error { background: #fee2e2; color: #991b1b; padding: 0.6rem 0.9rem; border-radius: var(--radius-md); font-size: var(--font-size-sm); }

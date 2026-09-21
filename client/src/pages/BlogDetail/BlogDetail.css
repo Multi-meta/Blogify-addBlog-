@@ -192,6 +192,13 @@
   color: #1a1a1a;
 }
 
+.blog-detail__btn--edit {
+  background: #2563eb;
+  color: #fff;
+  text-decoration: none;
+  display: inline-block;
+}
+
 .blog-detail__btn--ghost {
   background: #f3f4f6;
   color: #374151;
@@ -244,3 +251,49 @@
 }
 .report-form__msg--ok  { background: #d1fae5; color: #065f46; }
 .report-form__msg--err { background: #fee2e2; color: #991b1b; }
+
+/* ---- Comment actions (admin edit / author report) ---- */
+.comment-item__actions {
+  display: flex;
+  gap: var(--spacing-sm);
+  margin-top: var(--spacing-xs);
+}
+
+.comment-item__action {
+  background: none;
+  border: none;
+  padding: 0;
+  font-size: var(--font-size-xs);
+  font-weight: 600;
+  color: var(--color-text-muted);
+  cursor: pointer;
+}
+.comment-item__action:hover { color: var(--color-primary); }
+
+.comment-edit {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-sm);
+}
+
+/* ---- "Planning a trip?" call-to-action (destinations linked to the post) ---- */
+.trip-cta {
+  background: #fffbeb;
+  border: 1px solid #fde68a;
+  border-radius: var(--radius-lg);
+  padding: var(--spacing-lg);
+  margin-bottom: var(--spacing-2xl);
+}
+.trip-cta__title { font-weight: 800; margin-bottom: var(--spacing-sm); }
+.trip-cta__buttons { display: flex; flex-wrap: wrap; gap: var(--spacing-sm); }
+.trip-cta__btn {
+  display: inline-block;
+  padding: 0.55rem 1.2rem;
+  background: var(--color-accent);
+  color: #1a1a1a;
+  font-weight: 700;
+  font-size: var(--font-size-sm);
+  border-radius: var(--radius-md);
+  text-decoration: none;
+}
+.trip-cta__btn:hover { background: #b8963f; }

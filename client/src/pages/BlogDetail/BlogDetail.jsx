@@ -3,7 +3,7 @@
 // Route: /blog/:id
 // ============================================================
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import DOMPurify from 'dompurify';
 import { getFallbackCoverImage } from '../../data/categories';
@@ -17,12 +17,47 @@ function formatDate(dateStr) {
   });
 }
 
+// Put a "Travel Guide" button right under the heading of each destination linked
+// to this post (the first heading that mentions the destination's name, e.g.
+// "1. Warangal Fort – Explore The Ruins"). Destinations whose button the author
+// already placed by hand, or that match no heading, are left to the fallback
+// box below the article. `html` must already be sanitized.
+function addTravelGuideButtons(html, destinations) {
+  const placed = new Set();
+  if (destinations.length === 0) return { html, placed };
+
+  const doc = new DOMParser().parseFromString(html, 'text/html');
+  const isHeading = (el) =>
+    /^H[1-6]$/.test(el.tagName) ||
+    (el.tagName === 'P' && el.children.length === 1 && /^(STRONG|B)$/.test(el.children[0].tagName) &&
+      el.textContent.trim() === el.children[0].textContent.trim());
+  const headings = [...doc.body.children].filter(isHeading);
+
+  destinations.forEach((d) => {
+    if (doc.querySelector(`a[href="/travel/${d.slug}"]`)) { placed.add(d.slug); return; }
+    const name = d.title.trim().toLowerCase();
+    const heading = name && headings.find((h) => h.textContent.toLowerCase().includes(name));
+    if (!heading) return;
+
+    const p = doc.createElement('p');
+    const a = doc.createElement('a');
+    a.setAttribute('href', `/travel/${d.slug}`);
+    a.textContent = 'Travel Guide';
+    p.appendChild(a);
+    heading.after(p);
+    placed.add(d.slug);
+  });
+
+  return { html: doc.body.innerHTML, placed };
+}
+
 function BlogDetail({ user }) {
   const { id } = useParams();
   const navigate = useNavigate();
 
   const [blog, setBlog]               = useState(null);
   const [comments, setComments]       = useState([]);
+  const [destinations, setDestinations] = useState([]); // travel plans linked to this post
   const [commentText, setCommentText] = useState('');
   const [loading, setLoading]         = useState(true);
   const [error, setError]             = useState('');
@@ -37,6 +72,18 @@ function BlogDetail({ user }) {
   const [reporting, setReporting]     = useState(false);
   const [reportMsg, setReportMsg]     = useState('');   // success/error feedback
 
+  // Admin: inline comment editing
+  const [editingId, setEditingId]       = useState(null);
+  const [editText, setEditText]         = useState('');
+  const [savingEdit, setSavingEdit]     = useState(false);
+  const [commentError, setCommentError] = useState('');
+
+  // Blog author: reporting a comment on their own blog
+  const [reportingId, setReportingId]     = useState(null);
+  const [commentReason, setCommentReason] = useState('');
+  const [sendingCommentReport, setSendingCommentReport] = useState(false);
+  const [commentReportMsg, setCommentReportMsg] = useState({ id: null, text: '', ok: false });
+
   useEffect(() => {
     fetch(`/blog/${id}`, { credentials: 'include' })
       .then((res) => res.json())
@@ -44,6 +91,7 @@ function BlogDetail({ user }) {
         if (data.success) {
           setBlog(data.blog);
           setComments(data.comments);
+          setDestinations(data.destinations || []);
         } else {
           setError('Blog not found.');
         }
@@ -127,6 +175,73 @@ function BlogDetail({ user }) {
     }
   }
 
+  // ── Admin: edit any comment ─────────────────────────────────
+  function startEdit(comment) {
+    setEditingId(comment._id);
+    setEditText(comment.content);
+    setCommentError('');
+  }
+
+  async function handleEditSave(e) {
+    e.preventDefault();
+    if (!editText.trim() || savingEdit) return;
+    setSavingEdit(true);
+    setCommentError('');
+    try {
+      const res = await fetch(`/blog/comment/${editingId}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
+        body: JSON.stringify({ content: editText }),
+      });
+      const data = await res.json();
+      if (data.success) {
+        setComments((prev) => prev.map((c) => (c._id === editingId ? data.comment : c)));
+        setEditingId(null);
+      } else {
+        setCommentError(data.error || 'Could not update comment.');
+      }
+    } catch {
+      setCommentError('Could not connect to server.');
+    } finally {
+      setSavingEdit(false);
+    }
+  }
+
+  // ── Blog author: report a comment on their own blog ─────────
+  async function handleCommentReport(e) {
+    e.preventDefault();
+    if (!commentReason.trim() || sendingCommentReport) return;
+    setSendingCommentReport(true);
+    const commentId = reportingId;
+    try {
+      const res = await fetch(`/blog/comment/${commentId}/report`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
+        body: JSON.stringify({ reason: commentReason }),
+      });
+      const data = await res.json();
+      if (data.success) {
+        setCommentReportMsg({ id: commentId, text: '✅ Comment reported to the admin.', ok: true });
+        setReportingId(null);
+        setCommentReason('');
+      } else {
+        setCommentReportMsg({ id: commentId, text: `❌ ${data.error}`, ok: false });
+      }
+    } catch {
+      setCommentReportMsg({ id: commentId, text: '❌ Could not send report.', ok: false });
+    } finally {
+      setSendingCommentReport(false);
+    }
+  }
+
+  // Body HTML with a Travel Guide button under each linked destination's heading
+  const body = useMemo(
+    () => addTravelGuideButtons(DOMPurify.sanitize(blog?.body || ''), destinations),
+    [blog, destinations]
+  );
+
   // ── Loading / error states ──────────────────────────────────
   if (loading) {
     return (
@@ -148,6 +263,20 @@ function BlogDetail({ user }) {
   }
 
   const isAdmin = user?.role === 'ADMIN';
+
+  // "Travel Guide" buttons live inside the post body as links to /travel/<slug>.
+  // Open them through the router (no full page reload). The travel page itself
+  // handles the sign-in / subscription gate.
+  function handleBodyClick(e) {
+    const link = e.target.closest?.('a[href^="/travel/"]');
+    if (!link) return;
+    e.preventDefault();
+    navigate(link.getAttribute('href'));
+  }
+
+  // Linked destinations that got no button inside the article text
+  const extraTrips = destinations.filter((d) => !body.placed.has(d.slug));
+  const isAuthor = !!user && String(blog.createdBy?._id) === String(user._id);
 
   return (
     <article className="blog-detail">
@@ -183,12 +312,34 @@ function BlogDetail({ user }) {
           any HTML, so scripts and event handlers are stripped first */}
       <div
         className="blog-detail__body blog-body-html"
-        dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(blog.body) }}
+        onClick={handleBodyClick}
+        dangerouslySetInnerHTML={{ __html: body.html }}
       />
+
+      {/* Travel plans linked to this post but not placed inline */}
+      {extraTrips.length > 0 && (
+        <div className="trip-cta">
+          <div className="trip-cta__title">🧳 Planning a trip? Open the travel guide</div>
+          <div className="trip-cta__buttons">
+            {extraTrips.map((d) => (
+              <Link key={d._id} to={`/travel/${d.slug}`} className="trip-cta__btn">
+                Travel Guide · {d.title}
+              </Link>
+            ))}
+          </div>
+        </div>
+      )}
 
       {/* ── Action Bar (Admin Delete + User Report) ── */}
       {user && (
         <div className="blog-detail__actions">
+          {/* Author or Admin: Edit Blog */}
+          {(isAuthor || isAdmin) && (
+            <Link to={`/blog/edit/${blog._id}`} className="blog-detail__btn blog-detail__btn--edit">
+              ✏️ Edit Blog
+            </Link>
+          )}
+
           {/* Admin: Delete Blog */}
           {isAdmin && (
             <button
@@ -284,7 +435,90 @@ function BlogDetail({ user }) {
                   <span className="comment-item__name">{comment.createdBy?.fullName}</span>
                   <span className="comment-item__date">{formatDate(comment.createdAt)}</span>
                 </div>
-                <p className="comment-item__text">{comment.content}</p>
+
+                {editingId === comment._id ? (
+                  <form className="comment-edit" onSubmit={handleEditSave}>
+                    <textarea
+                      className="report-form__textarea"
+                      rows={3}
+                      value={editText}
+                      onChange={(e) => setEditText(e.target.value)}
+                      required
+                    />
+                    {commentError && (
+                      <p className="report-form__msg report-form__msg--err">{commentError}</p>
+                    )}
+                    <div className="report-form__row">
+                      <button type="submit" className="blog-detail__btn blog-detail__btn--edit" disabled={savingEdit}>
+                        {savingEdit ? 'Saving...' : 'Save'}
+                      </button>
+                      <button
+                        type="button"
+                        className="blog-detail__btn blog-detail__btn--ghost"
+                        onClick={() => setEditingId(null)}
+                      >
+                        Cancel
+                      </button>
+                    </div>
+                  </form>
+                ) : (
+                  <p className="comment-item__text">{comment.content}</p>
+                )}
+
+                {/* Admin can edit any comment; a blog's author can report comments on it */}
+                {editingId !== comment._id && (isAdmin || isAuthor) && (
+                  <div className="comment-item__actions">
+                    {isAdmin && (
+                      <button type="button" className="comment-item__action" onClick={() => startEdit(comment)}>
+                        ✏️ Edit
+                      </button>
+                    )}
+                    {isAuthor && reportingId !== comment._id && (
+                      <button
+                        type="button"
+                        className="comment-item__action"
+                        onClick={() => {
+                          setReportingId(comment._id);
+                          setCommentReason('');
+                          setCommentReportMsg({ id: null, text: '', ok: false });
+                        }}
+                      >
+                        🚩 Report
+                      </button>
+                    )}
+                  </div>
+                )}
+
+                {isAuthor && reportingId === comment._id && (
+                  <form className="report-form" onSubmit={handleCommentReport}>
+                    <textarea
+                      className="report-form__textarea"
+                      rows={2}
+                      placeholder="Why are you reporting this comment?"
+                      value={commentReason}
+                      onChange={(e) => setCommentReason(e.target.value)}
+                      required
+                    />
+                    <div className="report-form__row">
+                      <button type="submit" className="blog-detail__btn blog-detail__btn--report" disabled={sendingCommentReport}>
+                        {sendingCommentReport ? 'Sending...' : 'Submit Report'}
+                      </button>
+                      <button
+                        type="button"
+                        className="blog-detail__btn blog-detail__btn--ghost"
+                        onClick={() => setReportingId(null)}
+                      >
+                        Cancel
+                      </button>
+                    </div>
+                  </form>
+                )}
+
+                {commentReportMsg.id === comment._id && commentReportMsg.text && (
+                  <p className={`report-form__msg ${commentReportMsg.ok ? 'report-form__msg--ok' : 'report-form__msg--err'}`}>
+                    {commentReportMsg.text}
+                  </p>
+                )}
               </div>
             </div>
           ))}

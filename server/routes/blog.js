@@ -1,11 +1,13 @@
 const { Router } = require("express");
 const crypto = require("crypto");
 const multer = require("multer");
+const mongoose = require("mongoose");
 const path = require("path");
 
 const Blog   = require("../models/blog");
 const Comment = require("../models/comment");
 const Report = require("../models/report");
+const Destination = require("../models/destination");
 const requireAuth = require("../middlewares/requireAuth");
 const requireAdmin = require("../middlewares/requireAdmin");
 
@@ -71,7 +73,11 @@ router.get("/:id", async (req, res) => {
       "fullName profileImageURL"
     );
 
-    return res.json({ success: true, blog, comments });
+    // Travel plans the admin linked to this article (drives the "Travel Guide" button)
+    const destinations = await Destination.find({ blogId: blog._id, isPublished: true })
+      .select("title slug");
+
+    return res.json({ success: true, blog, comments, destinations });
   } catch (error) {
     return res.status(500).json({ success: false, error: error.message });
   }
@@ -86,6 +92,8 @@ router.delete("/:id", requireAdmin, async (req, res) => {
     // Also remove associated comments and reports
     await Comment.deleteMany({ blogId: req.params.id });
     await Report.deleteMany({ blogId: req.params.id });
+    // Keep the travel plans, just detach them from the deleted article
+    await Destination.updateMany({ blogId: req.params.id }, { $unset: { blogId: 1 } });
 
     return res.json({ success: true });
   } catch (error) {
@@ -140,6 +148,71 @@ router.post("/comment/:blogId", async (req, res) => {
       "fullName profileImageURL"
     );
     return res.json({ success: true, comment: populated });
+  } catch (error) {
+    return res.status(500).json({ success: false, error: error.message });
+  }
+});
+
+// ── PUT /blog/comment/:commentId — edit a comment (admin only) ─
+router.put("/comment/:commentId", requireAdmin, async (req, res) => {
+  try {
+    if (!mongoose.isValidObjectId(req.params.commentId)) {
+      return res.status(404).json({ success: false, error: "Comment not found" });
+    }
+
+    const content = typeof req.body.content === "string" ? req.body.content.trim() : "";
+    if (!content) {
+      return res.status(400).json({ success: false, error: "Comment cannot be empty." });
+    }
+
+    const comment = await Comment.findByIdAndUpdate(
+      req.params.commentId,
+      { content },
+      { new: true }
+    ).populate("createdBy", "fullName profileImageURL");
+    if (!comment) return res.status(404).json({ success: false, error: "Comment not found" });
+
+    return res.json({ success: true, comment });
+  } catch (error) {
+    return res.status(500).json({ success: false, error: error.message });
+  }
+});
+
+// ── POST /blog/comment/:commentId/report — blog author reports a comment ─
+// Ownership rule: only the author of the blog the comment sits on may report it
+router.post("/comment/:commentId/report", requireAuth, async (req, res) => {
+  try {
+    if (!mongoose.isValidObjectId(req.params.commentId)) {
+      return res.status(404).json({ success: false, error: "Comment not found" });
+    }
+
+    const reason = typeof req.body.reason === "string" ? req.body.reason.trim() : "";
+    if (!reason) {
+      return res.status(400).json({ success: false, error: "Reason is required." });
+    }
+
+    const comment = await Comment.findById(req.params.commentId);
+    if (!comment) return res.status(404).json({ success: false, error: "Comment not found" });
+
+    const blog = await Blog.findById(comment.blogId).select("title createdBy");
+    if (!blog) return res.status(404).json({ success: false, error: "Blog not found" });
+
+    if (String(blog.createdBy) !== String(req.user._id)) {
+      return res.status(403).json({
+        success: false,
+        error: "You can only report comments on your own blogs.",
+      });
+    }
+
+    const report = await Report.create({
+      blogId:     blog._id,
+      blogTitle:  blog.title,
+      commentId:  comment._id,
+      reportedBy: req.user._id,
+      reason,
+    });
+
+    return res.json({ success: true, report });
   } catch (error) {
     return res.status(500).json({ success: false, error: error.message });
   }

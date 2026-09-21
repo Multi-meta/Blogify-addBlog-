@@ -11,15 +11,19 @@ import { useEditor, EditorContent } from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';
 import Image from '@tiptap/extension-image';
 import Placeholder from '@tiptap/extension-placeholder';
-import { useRef } from 'react';
+import { useRef, useState } from 'react';
 import './RichTextEditor.css';
 
 function RichTextEditor({ content = '', onChange }) {
   const fileRef = useRef(null);
+  const [tripOpen, setTripOpen] = useState(false);
+  const [destinations, setDestinations] = useState(null); // null = not loaded yet
 
   const editor = useEditor({
     extensions: [
-      StarterKit, // includes Underline since TipTap v3
+      // Includes Underline and Link since TipTap v3. Clicking a link while writing
+      // shouldn't navigate away from the editor.
+      StarterKit.configure({ link: { openOnClick: false } }),
       Image.configure({ inline: false, allowBase64: false }),
       Placeholder.configure({ placeholder: 'Write your blog content here...' }),
     ],
@@ -57,6 +61,25 @@ function RichTextEditor({ content = '', onChange }) {
 
     // Reset input so the same file can be re-selected
     e.target.value = '';
+  }
+
+  // Insert a "Travel Guide" button (a link to /travel/<slug>) at the cursor
+  function toggleTripMenu() {
+    const opening = !tripOpen;
+    setTripOpen(opening);
+    if (opening && destinations === null) {
+      fetch('/api/travel')
+        .then((r) => r.json())
+        .then((d) => setDestinations(d.destinations || []))
+        .catch(() => setDestinations([]));
+    }
+  }
+
+  function insertTripButton(slug) {
+    editor.chain().focus()
+      .insertContent(`<p><a href="/travel/${slug}">Travel Guide</a></p>`)
+      .run();
+    setTripOpen(false);
   }
 
   function Btn({ onClick, active, title, children }) {
@@ -136,6 +159,28 @@ function RichTextEditor({ content = '', onChange }) {
         <Btn onClick={() => fileRef.current?.click()} title="Insert Image">
           🖼️
         </Btn>
+
+        {/* Travel Guide button */}
+        <div className="rich-editor__trip">
+          <Btn onClick={toggleTripMenu} active={tripOpen} title="Insert a Travel Guide button">
+            🧳
+          </Btn>
+          {tripOpen && (
+            <div className="rich-editor__trip-menu">
+              <div className="rich-editor__trip-title">Travel Guide button for…</div>
+              {destinations === null ? (
+                <div className="rich-editor__trip-empty">Loading…</div>
+              ) : destinations.length === 0 ? (
+                <div className="rich-editor__trip-empty">No destinations yet. An admin can add them in Admin → Travel &amp; Plans.</div>
+              ) : destinations.map((d) => (
+                <button key={d._id} type="button" className="rich-editor__trip-item" onClick={() => insertTripButton(d.slug)}>
+                  {d.title}
+                </button>
+              ))}
+            </div>
+          )}
+        </div>
+
         <input
           ref={fileRef}
           type="file"

@@ -18,6 +18,11 @@ router.get("/reports", async (req, res) => {
         const reports = await Report.find({ status: "pending" })
             .populate("reportedBy", "fullName email profileImageURL")
             .populate("blogId", "title")
+            .populate({
+                path: "commentId",
+                select: "content createdBy",
+                populate: { path: "createdBy", select: "fullName" },
+            })
             .sort({ createdAt: -1 });
         return res.json({ success: true, reports });
     } catch (error) {

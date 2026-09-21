@@ -1,0 +1,327 @@
+/* =============================================
+   Travel planning pages — Subscription, destination list, travel plan
+   Uses the tokens from styles/global.css
+   ============================================= */
+
+.tv-page {
+  max-width: 1000px;
+  margin: var(--spacing-xl) auto;
+  padding: 0 var(--spacing-xl);
+}
+
+.tv-heading {
+  font-size: var(--font-size-3xl);
+  font-weight: 800;
+  color: var(--color-text);
+  margin-bottom: var(--spacing-xs);
+}
+
+.tv-sub {
+  color: var(--color-text-muted);
+  margin-bottom: var(--spacing-xl);
+  max-width: 640px;
+  line-height: 1.6;
+}
+
+.tv-muted { color: var(--color-text-muted); font-size: var(--font-size-sm); }
+
+.tv-error {
+  background: #fef2f2;
+  color: #b91c1c;
+  border: 1px solid #fecaca;
+  border-radius: var(--radius-md);
+  padding: 0.75rem 1rem;
+  margin-bottom: var(--spacing-lg);
+  font-size: var(--font-size-sm);
+}
+
+/* ---- Buttons ---- */
+.tv-btn {
+  display: inline-block;
+  padding: 0.6rem 1.2rem;
+  border: none;
+  border-radius: var(--radius-md);
+  background: var(--color-btn-primary);
+  color: var(--color-white);
+  font-size: var(--font-size-sm);
+  font-weight: 700;
+  text-align: center;
+  text-decoration: none;
+  cursor: pointer;
+  transition: background var(--transition-fast), opacity var(--transition-fast);
+}
+.tv-btn:hover:not(:disabled) { background: var(--color-btn-hover); }
+.tv-btn:disabled { opacity: 0.55; cursor: not-allowed; }
+
+.tv-btn--gold { background: var(--color-accent); color: #1a1a1a; }
+.tv-btn--gold:hover:not(:disabled) { background: #b8963f; }
+
+.tv-btn--ghost {
+  background: #f3f4f6;
+  color: #374151;
+  border: 1px solid #d1d5db;
+}
+.tv-btn--ghost:hover:not(:disabled) { background: #e5e7eb; }
+
+/* ---- Current plan banner ---- */
+.tv-banner {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--spacing-md);
+  background: var(--color-white);
+  border: 1px solid var(--color-border);
+  border-left: 4px solid var(--color-accent);
+  border-radius: var(--radius-md);
+  padding: var(--spacing-md) var(--spacing-lg);
+  margin-bottom: var(--spacing-xl);
+  box-shadow: var(--shadow-card);
+}
+.tv-banner__title { font-weight: 700; }
+
+/* ---- Plan cards ---- */
+.tv-plans {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: var(--spacing-lg);
+  margin-bottom: var(--spacing-2xl);
+}
+
+.tv-plan {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  background: var(--color-white);
+  border: 1.5px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  padding: var(--spacing-lg);
+  box-shadow: var(--shadow-card);
+}
+.tv-plan--current { border-color: var(--color-accent); }
+
+.tv-plan__badge {
+  position: absolute;
+  top: -0.7rem;
+  right: 1rem;
+  background: var(--color-accent);
+  color: #1a1a1a;
+  font-size: var(--font-size-xs);
+  font-weight: 800;
+  padding: 0.2rem 0.65rem;
+  border-radius: 999px;
+}
+
+.tv-plan__name { font-size: var(--font-size-xl); font-weight: 800; }
+.tv-plan__desc { color: var(--color-text-muted); font-size: var(--font-size-sm); margin: 0.2rem 0 var(--spacing-md); min-height: 2.4em; }
+
+.tv-plan__price { font-size: 2.2rem; font-weight: 800; line-height: 1; }
+.tv-plan__price small { font-size: var(--font-size-sm); font-weight: 500; color: var(--color-text-muted); }
+
+.tv-plan__features {
+  list-style: none;
+  margin: var(--spacing-md) 0 var(--spacing-lg);
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+  flex: 1;
+}
+.tv-plan__features li {
+  font-size: var(--font-size-sm);
+  padding-left: 1.4rem;
+  position: relative;
+  line-height: 1.45;
+}
+.tv-plan__features li::before {
+  content: '✓';
+  position: absolute;
+  left: 0;
+  color: #059669;
+  font-weight: 800;
+}
+
+.tv-plan__note { font-size: var(--font-size-xs); color: var(--color-text-muted); margin-top: 0.5rem; text-align: center; }
+
+/* ---- Tables (payment history, rate card) ---- */
+.tv-section-title {
+  font-size: var(--font-size-xl);
+  font-weight: 700;
+  margin: var(--spacing-xl) 0 var(--spacing-md);
+  padding-bottom: var(--spacing-sm);
+  border-bottom: 2px solid var(--color-border);
+}
+
+.tv-table-wrap { overflow-x: auto; background: var(--color-white); border: 1px solid var(--color-border); border-radius: var(--radius-md); }
+.tv-table { width: 100%; border-collapse: collapse; font-size: var(--font-size-sm); }
+.tv-table th, .tv-table td { padding: 0.65rem 0.9rem; text-align: left; border-bottom: 1px solid var(--color-border); }
+.tv-table th { background: #f9fafb; font-size: var(--font-size-xs); text-transform: uppercase; letter-spacing: 0.04em; color: var(--color-text-muted); }
+.tv-table tr:last-child td { border-bottom: none; }
+.tv-table .tv-num { text-align: right; white-space: nowrap; }
+.tv-row--locked td { color: var(--color-text-muted); background: #fafafa; }
+
+.tv-status { font-size: var(--font-size-xs); font-weight: 700; padding: 0.15rem 0.55rem; border-radius: 999px; }
+.tv-status--paid { background: #d1fae5; color: #065f46; }
+.tv-status--failed { background: #fee2e2; color: #991b1b; }
+.tv-status--created { background: #fef3c7; color: #92400e; }
+.tv-status--refunded { background: #e5e7eb; color: #374151; }
+
+/* ---- Plan-tier pills ---- */
+.tv-tier {
+  display: inline-block;
+  font-size: var(--font-size-xs);
+  font-weight: 700;
+  padding: 0.15rem 0.6rem;
+  border-radius: 999px;
+  white-space: nowrap;
+  background: #e5e7eb;
+  color: #374151;
+}
+.tv-tier--1 { background: #dbeafe; color: #1e40af; }
+.tv-tier--2 { background: #ede9fe; color: #5b21b6; }
+.tv-tier--3 { background: #fef3c7; color: #92400e; }
+
+/* ---- Modal (mock checkout) ---- */
+.tv-modal-back {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--spacing-md);
+  z-index: 300;
+}
+.tv-modal {
+  background: var(--color-white);
+  border-radius: var(--radius-lg);
+  padding: var(--spacing-xl);
+  width: 100%;
+  max-width: 420px;
+  box-shadow: var(--shadow-card-hover);
+  /* Taller than the screen (card form, phones)? Scroll inside the popup */
+  max-height: calc(100vh - 2 * var(--spacing-md));
+  overflow-y: auto;
+}
+.tv-modal h3 { font-size: var(--font-size-xl); margin-bottom: var(--spacing-sm); }
+.tv-modal__amount { font-size: 2rem; font-weight: 800; margin: var(--spacing-sm) 0; }
+.tv-modal__test {
+  background: #fffbeb;
+  border: 1px solid #fde68a;
+  border-radius: var(--radius-md);
+  padding: 0.6rem 0.8rem;
+  font-size: var(--font-size-sm);
+  margin-bottom: var(--spacing-md);
+}
+.tv-modal__actions { display: flex; flex-direction: column; gap: var(--spacing-sm); }
+.tv-link-btn { background: none; border: none; color: var(--color-text-muted); font-size: var(--font-size-xs); text-decoration: underline; cursor: pointer; margin-top: var(--spacing-xs); }
+
+/* ---- Destination list ---- */
+.tv-dest-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: var(--spacing-lg);
+}
+.tv-dest {
+  display: flex;
+  flex-direction: column;
+  background: var(--color-white);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  box-shadow: var(--shadow-card);
+  color: inherit;
+  text-decoration: none;
+  transition: box-shadow var(--transition-base), transform var(--transition-base);
+}
+.tv-dest:hover { box-shadow: var(--shadow-card-hover); transform: translateY(-2px); }
+.tv-dest__img { width: 100%; height: 160px; object-fit: cover; background: linear-gradient(135deg, #1a1f36, #3b4371); }
+.tv-dest__body { padding: var(--spacing-md); }
+.tv-dest__title { font-weight: 700; font-size: var(--font-size-lg); }
+.tv-dest__loc { color: var(--color-text-muted); font-size: var(--font-size-sm); margin-bottom: 0.4rem; }
+.tv-dest__sum { font-size: var(--font-size-sm); line-height: 1.5; }
+
+/* ---- Travel plan page ---- */
+.tv-hero {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--spacing-lg);
+  align-items: flex-start;
+  margin-bottom: var(--spacing-lg);
+}
+.tv-hero__img { width: 260px; max-width: 100%; height: 170px; object-fit: cover; border-radius: var(--radius-lg); }
+.tv-hero__text { flex: 1; min-width: 240px; }
+
+.tv-chips { display: flex; flex-wrap: wrap; gap: 0.4rem; margin-bottom: var(--spacing-lg); }
+.tv-chip {
+  font-size: var(--font-size-sm);
+  padding: 0.3rem 0.8rem;
+  border-radius: 999px;
+  background: var(--color-white);
+  border: 1px solid var(--color-border);
+  color: var(--color-text);
+  text-decoration: none;
+}
+.tv-chip:hover { border-color: var(--color-accent); }
+
+.tv-upsell {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--spacing-md);
+  background: #fffbeb;
+  border: 1px solid #fde68a;
+  border-radius: var(--radius-md);
+  padding: var(--spacing-md) var(--spacing-lg);
+  margin-bottom: var(--spacing-lg);
+  font-size: var(--font-size-sm);
+}
+
+.tv-cat { margin-bottom: var(--spacing-xl); scroll-margin-top: 80px; }
+.tv-cat__title { font-size: var(--font-size-xl); font-weight: 700; margin-bottom: var(--spacing-sm); }
+
+.tv-item {
+  background: var(--color-white);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  padding: var(--spacing-md) var(--spacing-lg);
+  margin-bottom: var(--spacing-sm);
+}
+.tv-item__head { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: var(--spacing-sm); margin-bottom: 0.4rem; }
+.tv-item__title { font-weight: 700; }
+.tv-item__body { white-space: pre-wrap; line-height: 1.7; font-size: var(--font-size-sm); }
+.tv-item__contact { margin-top: 0.5rem; font-size: var(--font-size-sm); color: var(--color-text-muted); }
+
+.tv-item--locked { background: #f9fafb; border-style: dashed; }
+.tv-item--locked .tv-item__title { color: var(--color-text-muted); }
+.tv-lock { font-size: var(--font-size-sm); color: #92400e; line-height: 1.5; }
+.tv-lock a { font-weight: 700; color: var(--color-primary); }
+
+/* ---- Sign-in gate ---- */
+.tv-gate {
+  max-width: 480px;
+  margin: var(--spacing-2xl) auto;
+  text-align: center;
+  background: var(--color-white);
+  border-radius: var(--radius-lg);
+  padding: var(--spacing-xl);
+  box-shadow: var(--shadow-card);
+}
+.tv-gate h2 { margin-bottom: var(--spacing-sm); }
+.tv-gate p { color: var(--color-text-muted); margin-bottom: var(--spacing-lg); line-height: 1.6; }
+.tv-gate__actions { display: flex; gap: var(--spacing-sm); justify-content: center; flex-wrap: wrap; }
+
+@media (max-width: 600px) {
+  .tv-page { padding: 0 var(--spacing-md); }
+  .tv-heading { font-size: var(--font-size-2xl); }
+}
+
+/* ---- Community guides ---- */
+.tv-sub-item { padding: var(--spacing-sm) 0; border-top: 1px solid var(--color-border); margin-top: var(--spacing-sm); }
+.tv-sub-item__title { font-weight: 700; margin-bottom: 0.25rem; }
+
+.tv-report { margin-top: var(--spacing-md); }
+.tv-report__form { display: flex; flex-direction: column; gap: var(--spacing-sm); max-width: 480px; }
+.tv-report__form select,
+.tv-report__form textarea { padding: 0.5rem 0.7rem; border: 1.5px solid var(--color-border); border-radius: var(--radius-sm); font-family: inherit; font-size: var(--font-size-sm); }
+.tv-report__ok { color: #065f46; font-size: var(--font-size-sm); margin-top: 0.4rem; }
+.tv-report__err { color: #991b1b; font-size: var(--font-size-sm); margin-top: 0.4rem; }

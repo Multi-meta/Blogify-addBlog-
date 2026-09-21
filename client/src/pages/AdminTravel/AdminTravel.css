@@ -1,0 +1,116 @@
+/* =============================================
+   Admin — Travel & Subscriptions
+   Builds on the .admin-page / .admin-btn styles from AdminDashboard.css
+   ============================================= */
+
+.at-tabs {
+  display: flex;
+  gap: var(--spacing-xs);
+  border-bottom: 2px solid var(--color-border);
+  margin-bottom: var(--spacing-lg);
+  flex-wrap: wrap;
+}
+.at-tab {
+  background: none;
+  border: none;
+  padding: 0.6rem 1.1rem;
+  font-size: var(--font-size-base);
+  font-weight: 600;
+  color: var(--color-text-muted);
+  cursor: pointer;
+  border-bottom: 3px solid transparent;
+  margin-bottom: -2px;
+}
+.at-tab:hover { color: var(--color-text); }
+.at-tab--active { color: var(--color-text); border-bottom-color: var(--color-accent); }
+
+.at-back { display: inline-block; margin-bottom: var(--spacing-md); color: var(--color-primary); font-size: var(--font-size-sm); font-weight: 600; text-decoration: none; }
+
+.at-toolbar { display: flex; justify-content: space-between; align-items: center; gap: var(--spacing-md); margin-bottom: var(--spacing-md); flex-wrap: wrap; }
+
+.at-card {
+  background: var(--color-white);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  padding: var(--spacing-md) var(--spacing-lg);
+  margin-bottom: var(--spacing-md);
+  box-shadow: var(--shadow-card);
+}
+.at-card--off { opacity: 0.65; }
+
+.at-row { display: flex; flex-wrap: wrap; align-items: flex-start; justify-content: space-between; gap: var(--spacing-md); }
+.at-row__main { flex: 1; min-width: 220px; }
+.at-row__title { font-weight: 700; font-size: var(--font-size-lg); }
+.at-row__meta { color: var(--color-text-muted); font-size: var(--font-size-sm); margin-top: 0.15rem; }
+.at-row__actions { display: flex; gap: var(--spacing-sm); flex-wrap: wrap; }
+
+.at-features { margin: 0.5rem 0 0 1.1rem; font-size: var(--font-size-sm); color: var(--color-text); }
+
+.at-btn-primary { background: var(--color-btn-primary); color: #fff; }
+
+.at-pill {
+  display: inline-block;
+  font-size: var(--font-size-xs);
+  font-weight: 700;
+  padding: 0.15rem 0.6rem;
+  border-radius: 999px;
+  background: #e5e7eb;
+  color: #374151;
+  margin-left: 0.4rem;
+}
+.at-pill--ok { background: #d1fae5; color: #065f46; }
+.at-pill--warn { background: #fef3c7; color: #92400e; }
+
+/* ---- Forms ---- */
+.at-form {
+  background: #f9fafb;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  padding: var(--spacing-md) var(--spacing-lg);
+  margin: var(--spacing-md) 0;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: var(--spacing-md);
+}
+.at-field { display: flex; flex-direction: column; gap: 0.25rem; }
+.at-field--full { grid-column: 1 / -1; }
+.at-field label { font-size: var(--font-size-xs); font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em; color: var(--color-text-muted); }
+.at-field input[type='text'],
+.at-field input[type='number'],
+.at-field select,
+.at-field textarea {
+  padding: 0.5rem 0.7rem;
+  border: 1.5px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  font-size: var(--font-size-sm);
+  font-family: inherit;
+  background: #fff;
+}
+.at-field textarea { resize: vertical; }
+.at-field input:focus, .at-field select:focus, .at-field textarea:focus { outline: none; border-color: var(--color-accent); }
+.at-field__hint { font-size: var(--font-size-xs); color: var(--color-text-muted); }
+.at-check { display: flex; align-items: center; gap: 0.5rem; font-size: var(--font-size-sm); }
+.at-form__actions { grid-column: 1 / -1; display: flex; gap: var(--spacing-sm); }
+
+/* ---- Summary numbers ---- */
+.at-stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: var(--spacing-md); margin-bottom: var(--spacing-lg); }
+.at-stat { background: var(--color-white); border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--spacing-md); box-shadow: var(--shadow-card); }
+.at-stat__value { font-size: var(--font-size-2xl); font-weight: 800; }
+.at-stat__label { font-size: var(--font-size-sm); color: var(--color-text-muted); }
+
+.at-notice { background: #ecfdf5; color: #065f46; border: 1px solid #a7f3d0; border-radius: var(--radius-md); padding: 0.6rem 1rem; margin-bottom: var(--spacing-md); font-size: var(--font-size-sm); }
+
+.at-note {
+  background: #eff6ff;
+  border: 1px solid #bfdbfe;
+  border-radius: var(--radius-md);
+  padding: 0.7rem 1rem;
+  font-size: var(--font-size-sm);
+  line-height: 1.55;
+  margin-bottom: var(--spacing-lg);
+}
+.at-note code { background: #dbeafe; padding: 0.05rem 0.35rem; border-radius: 4px; font-size: 0.85em; }
+
+@media (max-width: 640px) {
+  .at-form { grid-template-columns: 1fr; }
+}
