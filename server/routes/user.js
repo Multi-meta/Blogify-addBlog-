@@ -1,14 +1,12 @@
 const { Router } = require("express");
 const mongoose = require("mongoose");
-const crypto = require("crypto");
-const path   = require("path");
-const multer = require("multer");
 
 const User    = require("../models/user");
 const Blog    = require("../models/blog");
 const Comment = require("../models/comment");
 const { validateToken, createTokenForUser } = require("../services/authentication");
 const requireAuth = require("../middlewares/requireAuth");
+const { uploadImage, saveImage } = require("../services/imageUpload");
 
 const router = Router();
 
@@ -21,47 +19,6 @@ const COOKIE_OPTIONS = {
     sameSite: "lax",
 };
 const COOKIE_MAX_AGE = 7 * 24 * 60 * 60 * 1000; // same lifetime as the JWT
-
-// ── Multer — avatar image uploads ─────────────────────────────
-const IMAGE_EXTENSIONS = {
-    "image/jpeg": ".jpg",
-    "image/png":  ".png",
-    "image/gif":  ".gif",
-    "image/webp": ".webp",
-};
-const MAX_AVATAR_MB = 5;
-
-const avatarUpload = multer({
-    storage: multer.diskStorage({
-        destination: function (req, file, cb) {
-            cb(null, path.resolve("./public/uploads/avatars/"));
-        },
-        filename: function (req, file, cb) {
-            const name = `${Date.now()}-${crypto.randomBytes(8).toString("hex")}`;
-            cb(null, name + IMAGE_EXTENSIONS[file.mimetype]);
-        },
-    }),
-    limits: { fileSize: MAX_AVATAR_MB * 1024 * 1024, files: 1 },
-    fileFilter: function (req, file, cb) {
-        if (IMAGE_EXTENSIONS[file.mimetype]) return cb(null, true);
-        const error = new Error("Only JPEG, PNG, GIF or WebP images are allowed.");
-        error.status = 400;
-        cb(error);
-    },
-});
-
-// Wraps multer so upload errors come back as JSON (not Express default HTML)
-function uploadAvatar(req, res, next) {
-    const handler = avatarUpload.single("avatar");
-    handler(req, res, (err) => {
-        if (!err) return next();
-        const message = err.code === "LIMIT_FILE_SIZE"
-            ? `Image must be ${MAX_AVATAR_MB} MB or smaller.`
-            : err.message;
-        const status = err instanceof multer.MulterError ? 400 : err.status || 500;
-        return res.status(status).json({ success: false, error: message });
-    });
-}
 
 // ── GET /user/me — validate cookie and return logged-in user ───
 // Called by React on page load to restore auth state
@@ -129,12 +86,12 @@ router.get("/logout", (req, res) => {
 });
 
 // ── POST /user/update-avatar — upload / replace profile picture ─
-// Saves file, updates DB, re-issues JWT so the new URL is in the cookie payload
+// Saves the image in MongoDB, updates the user, re-issues JWT so the new URL is in the cookie payload
 // Users who skip this keep the default /images/default.png set by the User model
-router.post("/update-avatar", requireAuth, uploadAvatar, async (req, res) => {
+router.post("/update-avatar", requireAuth, uploadImage("avatar"), async (req, res) => {
     if (!req.file) return res.status(400).json({ success: false, error: "No image uploaded." });
     try {
-        const profileImageURL = `/uploads/avatars/${req.file.filename}`;
+        const profileImageURL = await saveImage(req.file, req.user._id);
         const user = await User.findByIdAndUpdate(
             req.user._id,
             { profileImageURL },

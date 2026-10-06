@@ -1,14 +1,9 @@
 require("dotenv").config();
 
-const fs   = require("fs");
 const path = require("path");
 const express = require("express");
 const mongoose = require("mongoose");
 const cookieParser = require("cookie-parser");
-
-// Ensure upload directories exist before multer needs them
-fs.mkdirSync(path.resolve("./public/uploads/avatars"), { recursive: true });
-fs.mkdirSync(path.resolve("./public/uploads"),          { recursive: true });
 
 
 const Blog = require("./models/blog");
@@ -19,6 +14,7 @@ const adminTravelRoute = require("./routes/adminTravel");
 const subscriptionRoute = require("./routes/subscription");
 const stripeWebhook = require("./routes/stripeWebhook");
 const travelRoute = require("./routes/travel");
+const imagesRoute = require("./routes/images");
 const { seedDefaultPlans } = require("./services/subscription");
 
 const {
@@ -68,6 +64,7 @@ app.use(express.urlencoded({ extended: false }));
 app.use(express.json()); // parse JSON bodies from React
 app.use(cookieParser());
 app.use(checkForAuthenticationCookie("token"));
+app.use("/uploads/db", imagesRoute); // user-uploaded images stored in MongoDB
 app.use(express.static(path.resolve("./public")));
 
 // ── API Routes ─────────────────────────────────────────────────

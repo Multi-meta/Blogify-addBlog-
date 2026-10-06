@@ -12,9 +12,12 @@ import { useState } from 'react';
 import { loadStripe } from '@stripe/stripe-js';
 import { Elements, PaymentElement, useStripe, useElements } from '@stripe/react-stripe-js';
 
-// One Stripe.js instance per publishable key
+// One Stripe.js instance per publishable key.
+// The test-mode "stripe" assistant pill is turned off: once Stripe.js loads it would
+// otherwise stay in the bottom-right corner of every page, not just the payment form.
 const stripePromises = {};
-const getStripe = (key) => (stripePromises[key] ||= loadStripe(key));
+const getStripe = (key) =>
+  (stripePromises[key] ||= loadStripe(key, { developerTools: { assistant: { enabled: false } } }));
 
 // Match the site: same font, gold accent, navy text, 8px corners
 const appearance = {
