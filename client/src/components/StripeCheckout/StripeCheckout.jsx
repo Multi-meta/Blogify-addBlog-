@@ -8,16 +8,13 @@
 // confirm it (the server re-checks with Stripe before granting the plan).
 // ============================================================
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { loadStripe } from '@stripe/stripe-js';
 import { Elements, PaymentElement, useStripe, useElements } from '@stripe/react-stripe-js';
 
-// One Stripe.js instance per publishable key.
-// The test-mode "stripe" assistant pill is turned off: once Stripe.js loads it would
-// otherwise stay in the bottom-right corner of every page, not just the payment form.
+// One Stripe.js instance per publishable key
 const stripePromises = {};
-const getStripe = (key) =>
-  (stripePromises[key] ||= loadStripe(key, { developerTools: { assistant: { enabled: false } } }));
+const getStripe = (key) => (stripePromises[key] ||= loadStripe(key));
 
 // Match the site: same font, gold accent, navy text, 8px corners
 const appearance = {
@@ -78,6 +75,14 @@ function PayForm({ amountLabel, busy, onPaid, onCancel }) {
 }
 
 function StripeCheckout({ order, amountLabel, busy, onPaid, onCancel }) {
+  // Stripe's test-mode "stripe" pill stays on the page once Stripe.js loads.
+  // global.css hides it everywhere unless this class is on <body>, so it only
+  // shows while the card form is open.
+  useEffect(() => {
+    document.body.classList.add('stripe-checkout-open');
+    return () => document.body.classList.remove('stripe-checkout-open');
+  }, []);
+
   if (!order.publishableKey || !order.clientSecret) {
     return <div className="tv-error">Card payments are not set up on the server yet.</div>;
   }

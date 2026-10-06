@@ -111,3 +111,10 @@ select {
 ul, ol {
   list-style: none;
 }
+
+/* Stripe's test-mode "stripe" pill (bottom-right) stays on every page once
+   Stripe.js has loaded; only show it while the card form is open
+   (StripeCheckout adds .stripe-checkout-open to <body>). */
+body:not(.stripe-checkout-open) iframe[src*="elements-inner-easel"] {
+  display: none !important;
+}
