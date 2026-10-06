@@ -21,28 +21,50 @@ function Home() {
   const selectedCategory = searchParams.get('category') || '';
   const selectedSubcategory = searchParams.get('subcategory') || '';
 
-  const fetchBlogs = useCallback(() => {
+  const [wakingUp, setWakingUp] = useState(false);
+
+  // The free Render backend can take ~30-60s to wake from sleep, and the Vercel
+  // proxy gives up before then — so retry a few times before showing an error.
+  const fetchBlogs = useCallback((signal) => {
     setLoading(true);
     setError('');
+    setWakingUp(false);
 
     const params = new URLSearchParams();
     if (selectedCategory) params.set('category', selectedCategory);
     if (selectedSubcategory) params.set('subcategory', selectedSubcategory);
 
     const url = `/api/blogs${params.toString() ? '?' + params.toString() : ''}`;
+    const MAX_ATTEMPTS = 6;
+    const RETRY_DELAY_MS = 10000;
 
-    fetch(url, { credentials: 'include' })
-      .then((res) => res.json())
-      .then((data) => {
+    async function attempt(n) {
+      try {
+        const res = await fetch(url, { credentials: 'include', signal });
+        const data = await res.json(); // throws on the proxy's HTML error page
         if (data.success) setBlogs(data.blogs);
         else setError('Failed to load blogs.');
-      })
-      .catch(() => setError('Could not connect to server. Make sure the backend is running.'))
-      .finally(() => setLoading(false));
+        setWakingUp(false);
+        setLoading(false);
+      } catch (err) {
+        if (signal?.aborted) return;
+        if (n < MAX_ATTEMPTS) {
+          setWakingUp(true);
+          setTimeout(() => { if (!signal?.aborted) attempt(n + 1); }, RETRY_DELAY_MS);
+        } else {
+          setWakingUp(false);
+          setError('Could not connect to server. Please try again in a minute.');
+          setLoading(false);
+        }
+      }
+    }
+    attempt(1);
   }, [selectedCategory, selectedSubcategory]);
 
   useEffect(() => {
-    fetchBlogs();
+    const controller = new AbortController();
+    fetchBlogs(controller.signal);
+    return () => controller.abort();
   }, [fetchBlogs]);
 
   function handleFilterChange(category, subcategory) {
@@ -64,6 +86,15 @@ function Home() {
               border: '1px solid #fecaca', fontSize: '0.9rem'
             }}>
               ⚠️ {error}
+            </div>
+          )}
+          {wakingUp && (
+            <div style={{
+              background: '#fffbeb', color: '#92400e',
+              padding: '1rem 1.25rem', borderRadius: '8px', marginBottom: '1.5rem',
+              border: '1px solid #fde68a', fontSize: '0.9rem'
+            }}>
+              ⏳ Waking up the server — this can take up to a minute…
             </div>
           )}
           <BlogGrid blogs={blogs} loading={loading} />

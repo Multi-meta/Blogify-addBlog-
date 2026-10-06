@@ -31,6 +31,12 @@ const MONGO_URI = process.env.MONGO_URI || "mongodb://127.0.0.1:27017/blogify";
 
 app.disable("x-powered-by"); // don't advertise the framework to attackers
 
+// ── Health check ───────────────────────────────────────────────
+// Cheap endpoint (no DB, no auth) for keep-alive pings and Render health checks
+app.get("/api/health", (req, res) => {
+  res.json({ success: true, uptime: Math.round(process.uptime()) });
+});
+
 // ── CORS — allow React frontend to call this API ───────────────
 const cors = require("cors");
 app.use(
@@ -104,3 +110,16 @@ app.use("/api/travel", travelRoute);
 
 // ── Start Server ───────────────────────────────────────────────
 app.listen(PORT, () => console.log(`Server Started at PORT: ${PORT}`));
+
+// ── Keep-alive ─────────────────────────────────────────────────
+// Render's free plan sleeps a service after 15 min without inbound traffic.
+// Pinging our own public URL every 10 min counts as traffic and keeps it awake.
+// RENDER_EXTERNAL_URL is set automatically by Render; KEEP_ALIVE_URL overrides it.
+const KEEP_ALIVE_URL = process.env.KEEP_ALIVE_URL || process.env.RENDER_EXTERNAL_URL;
+if (KEEP_ALIVE_URL) {
+  const pingUrl = `${KEEP_ALIVE_URL.replace(/\/$/, "")}/api/health`;
+  setInterval(() => {
+    fetch(pingUrl).catch((err) => console.error("Keep-alive ping failed:", err.message));
+  }, 10 * 60 * 1000);
+  console.log(`Keep-alive enabled: pinging ${pingUrl} every 10 min`);
+}

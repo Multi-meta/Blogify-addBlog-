@@ -22,4 +22,4 @@ services:
         sync: false   # pk_test_...
       - key: STRIPE_WEBHOOK_SECRET
         sync: false   # whsec_... from the Stripe dashboard webhook endpoint for this service
-    healthCheckPath: /api/blogs
+    healthCheckPath: /api/health

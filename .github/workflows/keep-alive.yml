@@ -1,0 +1,15 @@
+# Pings the Render backend so the free instance doesn't go to sleep.
+# Backup for the server's own self-ping: this one also wakes it up if it did sleep.
+name: Keep backend awake
+
+on:
+  schedule:
+    - cron: "*/10 * * * *"   # every 10 minutes (GitHub may delay runs a little)
+  workflow_dispatch:          # lets you run it by hand from the Actions tab
+
+jobs:
+  ping:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Ping /api/health
+        run: curl -fsS --retry 5 --retry-delay 15 --max-time 90 https://blogify-addblog.onrender.com/api/health
