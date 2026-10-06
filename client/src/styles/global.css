@@ -114,7 +114,10 @@ ul, ol {
 
 /* Stripe's test-mode "stripe" pill (bottom-right) stays on every page once
    Stripe.js has loaded; only show it while the card form is open
-   (StripeCheckout adds .stripe-checkout-open to <body>). */
+   (StripeCheckout adds .stripe-checkout-open to <body>).
+   Stripe sets display/opacity inline with !important, which beats any
+   stylesheet rule, so hide it with visibility instead. */
 body:not(.stripe-checkout-open) iframe[src*="elements-inner-easel"] {
-  display: none !important;
+  visibility: hidden !important;
+  pointer-events: none !important;
 }
